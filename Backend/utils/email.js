@@ -1,14 +1,11 @@
 import nodemailer from "nodemailer";
 
-export const sendEmail = async (to, subject, text) => {
+export const sendEmail = async (to, subject, text, html) => {
   try {
-    // In production, configure these with actual SMTP credentials in .env
-    // For this demonstration/professional setup, we fallback to ethereal or a test account 
-    // if no env vars are provided, to prevent hard crashes.
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || "smtp.gmail.com",
       port: process.env.EMAIL_PORT || 587,
-      secure: false, // true for 465, false for other ports
+      secure: false, 
       auth: {
         user: process.env.EMAIL_USER || "test@example.com", 
         pass: process.env.EMAIL_PASS || "password123",
@@ -16,16 +13,17 @@ export const sendEmail = async (to, subject, text) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"UniYatra Admin" <${process.env.EMAIL_USER || "admin@uniyatra.com"}>`,
+      from: `"UniYatra Support" <${process.env.EMAIL_USER || "admin@uniyatra.com"}>`,
       to,
       subject,
       text,
+      html: html || text,
     });
 
-    console.log("Email sent: %s", info.messageId);
+    console.log("Professional Email sent: %s", info.messageId);
     return true;
   } catch (error) {
-    console.error("Error sending email: ", error);
+    console.error("Professional Email Error: ", error);
     return false;
   }
 };

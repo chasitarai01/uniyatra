@@ -43,6 +43,8 @@ import UserUniversityList from "./Pages/UserUniversityList.jsx";
 import UserScholarshipList from "./Pages/UserScholarshipList.jsx";
 import AdminUserManagement from "./Pages/Adminpage/AdminUserManagement.jsx";
 import AdminChecklistManagement from "./Pages/Adminpage/AdminChecklistManagement.jsx";
+import SupportDashboard from "./Pages/SupportChat/SupportDashboard.jsx";
+import SmartAssistant from "./Components/SmartAssistant.jsx";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -105,7 +107,7 @@ function App() {
             <Route path="/classes" element={<UserRooms />} />
             <Route path="/room/:roomCode" element={<UserVideoRoom />} />
             <Route path="/reminder" element={<UserReminders />} />
-            <Route path="/support-chat" element={<SupportChat />} />
+            <Route path="/support-chat" element={<SupportDashboard />} />
             <Route path="/cost-estimator" element={<CostEstimator />} />
           </Route>
 
@@ -124,6 +126,7 @@ function App() {
             <Route path="/admin/room/:roomCode" element={<AdminVideoRoom />} />
           </Route>
         </Routes>
+        <SmartAssistant />
       </Layout>
     </BrowserRouter>
   );
