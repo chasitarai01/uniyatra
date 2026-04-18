@@ -20,6 +20,7 @@ import setupSocket from "./socketHandler.js";
 import reminderRoutes from "./route/reminderRoutes.js";
 import supportChatRoutes from "./route/supportChatRoutes.js";
 import directChatRoutes from "./route/directChatRoutes.js";
+import costRoutes from "./route/costRoute.js";
 import { setSocketIO } from "./realtimeHub.js";
 import { registerSupportChatSocket } from "./supportChatSocket.js";
 import { registerDirectChatSocket } from "./directChatSocket.js";
@@ -50,15 +51,24 @@ app.use("/api/rooms", roomRoutes);
 app.use("/api/reminders", reminderRoutes);
 app.use("/api/support-chat", supportChatRoutes);
 app.use("/api/direct-chat", directChatRoutes);
+app.use("/api/cost-estimator", costRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// ⚡ Create HTTP server and attach Socket.IO
+// ⚡ Create HTTP server and attach Socket.IO with production-grade CORS
 const server = createServer(app); 
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "*", // In production, replace with your specific domain
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+  },
+  allowEIO3: true, // Support for older socket.io clients
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 // Setup Socket.IO handlers

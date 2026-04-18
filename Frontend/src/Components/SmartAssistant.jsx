@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  MessageSquare, X, Send, Bot, Sparkles, 
+import {
+  MessageSquare, X, Send, Bot, Sparkles,
   ChevronRight, GraduationCap, Award, HelpCircle,
   ThumbsUp, ExternalLink
 } from "lucide-react";
@@ -95,33 +95,32 @@ const SmartAssistant = () => {
             <div className="p-6 bg-slate-900 text-white shrink-0 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/20 blur-[60px] rounded-full"></div>
               <div className="relative z-10 flex items-center gap-4">
-                 <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/40">
-                    <Bot size={24} />
-                 </div>
-                 <div>
-                    <h3 className="text-lg font-black tracking-tight">Smart Assistant</h3>
-                    <div className="flex items-center gap-1.5">
-                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Always Online</span>
-                    </div>
-                 </div>
+                <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/40">
+                  <Bot size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black tracking-tight">Smart Assistant</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Always Online</span>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Chat Content */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-slate-50/50">
               {messages.map((m) => (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, x: m.type === 'user' ? 20 : -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  key={m.id} 
+                  key={m.id}
                   className={`flex ${m.type === 'user' ? "justify-end" : "justify-start"}`}
                 >
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-bold leading-relaxed shadow-sm ${
-                    m.type === 'user' 
-                      ? "bg-indigo-600 text-white rounded-br-none" 
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-bold leading-relaxed shadow-sm ${m.type === 'user'
+                      ? "bg-indigo-600 text-white rounded-br-none"
                       : "bg-white text-slate-700 border border-slate-100 rounded-bl-none"
-                  }`}>
+                    }`}>
                     {m.text}
                   </div>
                 </motion.div>
@@ -138,42 +137,42 @@ const SmartAssistant = () => {
 
               {/* Quick Actions at Bottom of Scroll */}
               <div className="pt-4 space-y-2">
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Quick Links</p>
-                 <div className="flex flex-wrap gap-2">
-                    {quickActions.map((action, i) => (
-                      <button 
-                        key={i}
-                        onClick={() => { navigate(action.path); setIsOpen(false); }}
-                        className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm"
-                      >
-                        <action.icon size={12} /> {action.label}
-                      </button>
-                    ))}
-                 </div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Quick Links</p>
+                <div className="flex flex-wrap gap-2">
+                  {quickActions.map((action, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { navigate(action.path); setIsOpen(false); }}
+                      className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm"
+                    >
+                      <action.icon size={12} /> {action.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Input */}
             <div className="p-6 border-t border-slate-100 shrink-0 bg-white">
               <div className="flex items-center gap-3 bg-slate-50 rounded-2xl px-4 py-2 border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all">
-                 <input 
-                   type="text" 
-                   value={inputText}
-                   onChange={(e) => setInputText(e.target.value)}
-                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                   placeholder="Type your message..."
-                   className="flex-1 bg-transparent border-none outline-none text-xs font-bold text-slate-800 py-2"
-                 />
-                 <button 
-                   onClick={handleSend}
-                   className="text-indigo-600 hover:scale-110 transition-transform disabled:opacity-30"
-                   disabled={!inputText.trim()}
-                 >
-                    <Send size={18} />
-                 </button>
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="Type your message..."
+                  className="flex-1 bg-transparent border-none outline-none text-xs font-bold text-slate-800 py-2"
+                />
+                <button
+                  onClick={handleSend}
+                  className="text-indigo-600 hover:scale-110 transition-transform disabled:opacity-30"
+                  disabled={!inputText.trim()}
+                >
+                  <Send size={18} />
+                </button>
               </div>
               <p className="text-center text-[8px] font-black text-slate-300 uppercase tracking-widest mt-4 flex items-center justify-center gap-1.5">
-                 <Sparkles size={10} className="text-amber-400" /> Powered by UniYatra Smart Intelligence
+                <Sparkles size={10} className="text-amber-400" /> Powered by UniYatra Smart Intelligence
               </p>
             </div>
           </motion.div>
