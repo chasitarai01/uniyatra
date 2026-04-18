@@ -26,7 +26,7 @@ import CourseManagement from "./Pages/Adminpage/CourseManagement.jsx";
 import ScholarshipManagement from "./Pages/Adminpage/ScholarshipManagement.jsx";
 import NotificationForm from "./Pages/Adminpage/AdminSendNotification.jsx";
 import UserNotifications from "./Components/usernotification.jsx";
-import AdminRooms from "./Pages/Adminpage/Adminrooms .jsx";
+import AdminRooms from "./Pages/Adminpage/AdminRooms.jsx";
 import AdminVideoRoom from "./Pages/Adminpage/Adminvideoroom.jsx";
 import UserRooms from "./Pages/Userroom/Userrooms.jsx";
 import UserVideoRoom from "./Pages/Userroom/Uservideoroom.jsx";
