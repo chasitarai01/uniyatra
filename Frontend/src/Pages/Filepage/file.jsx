@@ -1,10 +1,17 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  UploadCloud, File, X, CheckCircle, AlertCircle, 
+  Info, Shield, Zap, FileText, ImageIcon, 
+  Film, Music, Archive, Table
+} from "lucide-react";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // "success" | "error"
+  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -22,13 +29,6 @@ const FileUpload = () => {
     if (dropped) setFile(dropped);
   }, []);
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => setDragOver(false);
-
   const formatSize = (bytes) => {
     if (bytes < 1024) return bytes + " B";
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
@@ -36,43 +36,35 @@ const FileUpload = () => {
   };
 
   const getFileIcon = (file) => {
-    if (!file) return "📄";
+    if (!file) return <FileText className="text-slate-400" />;
     const type = file.type;
-    if (type.startsWith("image/")) return "🖼️";
-    if (type.startsWith("video/")) return "🎬";
-    if (type.startsWith("audio/")) return "🎵";
-    if (type.includes("pdf")) return "📕";
-    if (type.includes("zip") || type.includes("compressed")) return "🗜️";
-    if (type.includes("sheet") || type.includes("excel")) return "📊";
-    if (type.includes("document") || type.includes("word")) return "📝";
-    return "📄";
+    if (type.startsWith("image/")) return <ImageIcon className="text-indigo-500" />;
+    if (type.startsWith("video/")) return <Film className="text-purple-500" />;
+    if (type.startsWith("audio/")) return <Music className="text-sky-500" />;
+    if (type.includes("pdf")) return <FileText className="text-rose-500" />;
+    if (type.includes("zip")) return <Archive className="text-amber-500" />;
+    if (type.includes("sheet") || type.includes("excel")) return <Table className="text-emerald-500" />;
+    return <File className="text-indigo-500" />;
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      setMessage("Please select a file first.");
-      setMessageType("error");
+      setMessage({ type: "error", text: "Please select a file to continue." });
       return;
     }
 
     const token = localStorage.getItem("token");
-    if (!token) {
-      setMessage("Session expired. Please login again.");
-      setMessageType("error");
-      return;
-    }
-
     const formData = new FormData();
     formData.append("image", file);
 
     try {
       setLoading(true);
       setProgress(0);
-      setMessage("");
+      setMessage(null);
 
       const response = await axios.post(
-        "http://localhost:5001/api/file",
+        `${API_BASE}/api/file`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -83,426 +75,206 @@ const FileUpload = () => {
       );
 
       setProgress(100);
-      setMessage("File uploaded successfully!");
-      setMessageType("success");
-      console.log(response.data);
+      setMessage({ type: "success", text: "Document uploaded to secure vault successfully!" });
+      setFile(null);
     } catch (error) {
-      console.error("Upload error:", error.response?.data || error.message);
-      setMessage(
-        error.response?.data?.message || "Upload failed. Please try again."
-      );
-      setMessageType("error");
+      setMessage({ 
+        type: "error", 
+        text: error.response?.data?.message || "Upload failed. Maximum file size is 10MB." 
+      });
       setProgress(0);
     } finally {
       setLoading(false);
     }
   };
 
-  const clearFile = (e) => {
-    e.stopPropagation();
-    setFile(null);
-    setMessage("");
-    setProgress(0);
-    if (inputRef.current) inputRef.current.value = "";
-  };
-
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        .fu-root {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #0a0a0f;
-          font-family: 'DM Sans', sans-serif;
-          padding: 24px;
-        }
-
-        .fu-card {
-          width: 100%;
-          max-width: 480px;
-          background: #111118;
-          border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 20px;
-          padding: 36px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .fu-card::before {
-          content: '';
-          position: absolute;
-          top: -60px; right: -60px;
-          width: 200px; height: 200px;
-          background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .fu-header {
-          margin-bottom: 28px;
-        }
-
-        .fu-label-tag {
-          display: inline-block;
-          font-family: 'Syne', sans-serif;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #6366f1;
-          background: rgba(99,102,241,0.12);
-          border: 1px solid rgba(99,102,241,0.25);
-          border-radius: 100px;
-          padding: 4px 12px;
-          margin-bottom: 14px;
-        }
-
-        .fu-title {
-          font-family: 'Syne', sans-serif;
-          font-size: 26px;
-          font-weight: 800;
-          color: #f4f4f6;
-          line-height: 1.2;
-          margin-bottom: 6px;
-        }
-
-        .fu-subtitle {
-          font-size: 13.5px;
-          color: #6b6b80;
-          font-weight: 300;
-        }
-
-        .fu-dropzone {
-          border: 1.5px dashed rgba(255,255,255,0.1);
-          border-radius: 14px;
-          padding: 32px 24px;
-          text-align: center;
-          cursor: pointer;
-          transition: all 0.22s ease;
-          background: rgba(255,255,255,0.02);
-          margin-bottom: 16px;
-          position: relative;
-        }
-
-        .fu-dropzone:hover,
-        .fu-dropzone.drag-over {
-          border-color: rgba(99,102,241,0.5);
-          background: rgba(99,102,241,0.05);
-        }
-
-        .fu-dropzone.has-file {
-          border-style: solid;
-          border-color: rgba(99,102,241,0.3);
-          background: rgba(99,102,241,0.04);
-        }
-
-        .fu-drop-icon {
-          font-size: 38px;
-          margin-bottom: 12px;
-          display: block;
-          transition: transform 0.2s;
-        }
-
-        .fu-dropzone:hover .fu-drop-icon {
-          transform: translateY(-3px);
-        }
-
-        .fu-drop-text {
-          font-family: 'Syne', sans-serif;
-          font-size: 14px;
-          font-weight: 600;
-          color: #c4c4d4;
-          margin-bottom: 4px;
-        }
-
-        .fu-drop-sub {
-          font-size: 12px;
-          color: #4a4a5a;
-        }
-
-        .fu-drop-link {
-          color: #6366f1;
-          text-decoration: underline;
-          text-underline-offset: 2px;
-          cursor: pointer;
-        }
-
-        .fu-file-info {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          background: rgba(255,255,255,0.04);
-          border-radius: 10px;
-          padding: 14px;
-          margin-bottom: 16px;
-          border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .fu-file-icon {
-          font-size: 28px;
-          flex-shrink: 0;
-        }
-
-        .fu-file-details {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .fu-file-name {
-          font-family: 'Syne', sans-serif;
-          font-size: 13px;
-          font-weight: 600;
-          color: #e4e4f0;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .fu-file-size {
-          font-size: 11px;
-          color: #5a5a70;
-          margin-top: 2px;
-        }
-
-        .fu-clear-btn {
-          background: rgba(255,255,255,0.06);
-          border: none;
-          color: #6b6b80;
-          border-radius: 6px;
-          width: 28px; height: 28px;
-          cursor: pointer;
-          font-size: 14px;
-          display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0;
-          transition: all 0.15s;
-        }
-
-        .fu-clear-btn:hover {
-          background: rgba(239,68,68,0.15);
-          color: #ef4444;
-        }
-
-        .fu-progress-wrap {
-          margin-bottom: 16px;
-        }
-
-        .fu-progress-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 6px;
-        }
-
-        .fu-progress-label {
-          font-size: 11px;
-          color: #5a5a70;
-          font-weight: 500;
-        }
-
-        .fu-progress-pct {
-          font-family: 'Syne', sans-serif;
-          font-size: 11px;
-          font-weight: 700;
-          color: #6366f1;
-        }
-
-        .fu-progress-bar {
-          width: 100%;
-          height: 4px;
-          background: rgba(255,255,255,0.06);
-          border-radius: 100px;
-          overflow: hidden;
-        }
-
-        .fu-progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #6366f1, #818cf8);
-          border-radius: 100px;
-          transition: width 0.3s ease;
-        }
-
-        .fu-btn {
-          width: 100%;
-          padding: 15px;
-          background: #6366f1;
-          color: #fff;
-          border: none;
-          border-radius: 12px;
-          font-family: 'Syne', sans-serif;
-          font-size: 14px;
-          font-weight: 700;
-          letter-spacing: 0.03em;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .fu-btn:hover:not(:disabled) {
-          background: #5254cc;
-          transform: translateY(-1px);
-          box-shadow: 0 8px 24px rgba(99,102,241,0.35);
-        }
-
-        .fu-btn:active:not(:disabled) {
-          transform: translateY(0);
-        }
-
-        .fu-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .fu-btn-spinner {
-          width: 16px; height: 16px;
-          border: 2px solid rgba(255,255,255,0.3);
-          border-top-color: white;
-          border-radius: 50%;
-          animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .fu-message {
-          margin-top: 14px;
-          padding: 12px 14px;
-          border-radius: 10px;
-          font-size: 13px;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          animation: fadeIn 0.25s ease;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fu-message.success {
-          background: rgba(34,197,94,0.1);
-          border: 1px solid rgba(34,197,94,0.2);
-          color: #4ade80;
-        }
-
-        .fu-message.error {
-          background: rgba(239,68,68,0.1);
-          border: 1px solid rgba(239,68,68,0.2);
-          color: #f87171;
-        }
-
-        .fu-divider {
-          height: 1px;
-          background: rgba(255,255,255,0.06);
-          margin: 24px 0 20px;
-        }
-
-        .fu-hint {
-          font-size: 11.5px;
-          color: #3a3a4a;
-          text-align: center;
-          line-height: 1.6;
-        }
-
-        .fu-hint span {
-          color: #4a4a5a;
-        }
-
-        input[type="file"] { display: none; }
-      `}</style>
-
-      <div className="fu-root">
-        <div className="fu-card">
-          <div className="fu-header">
-            <div className="fu-label-tag">File Upload</div>
-            <h1 className="fu-title">Upload your document</h1>
-            <p className="fu-subtitle">Drag & drop or browse to get started</p>
-          </div>
-
-          <form onSubmit={handleUpload}>
-            <input
-              ref={inputRef}
-              type="file"
-              id="file-input"
-              onChange={handleFileChange}
-            />
-
-            {!file ? (
-              <div
-                className={`fu-dropzone${dragOver ? " drag-over" : ""}`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onClick={() => inputRef.current?.click()}
-              >
-                <span className="fu-drop-icon">☁️</span>
-                <p className="fu-drop-text">Drop your file here</p>
-                <p className="fu-drop-sub">
-                  or{" "}
-                  <span className="fu-drop-link">browse from device</span>
-                </p>
-              </div>
-            ) : (
-              <div className="fu-file-info">
-                <span className="fu-file-icon">{getFileIcon(file)}</span>
-                <div className="fu-file-details">
-                  <div className="fu-file-name">{file.name}</div>
-                  <div className="fu-file-size">{formatSize(file.size)}</div>
-                </div>
-                <button className="fu-clear-btn" onClick={clearFile} type="button">✕</button>
-              </div>
-            )}
-
-            {loading && (
-              <div className="fu-progress-wrap">
-                <div className="fu-progress-header">
-                  <span className="fu-progress-label">Uploading…</span>
-                  <span className="fu-progress-pct">{progress}%</span>
-                </div>
-                <div className="fu-progress-bar">
-                  <div className="fu-progress-fill" style={{ width: `${progress}%` }} />
-                </div>
-              </div>
-            )}
-
-            <button className="fu-btn" type="submit" disabled={loading}>
-              {loading ? (
-                <>
-                  <span className="fu-btn-spinner" />
-                  Uploading…
-                </>
-              ) : (
-                <>
-                  ↑ Upload File
-                </>
-              )}
-            </button>
-          </form>
-
-          {message && (
-            <div className={`fu-message ${messageType}`}>
-              <span>{messageType === "success" ? "✓" : "✕"}</span>
-              {message}
-            </div>
-          )}
-
-          <div className="fu-divider" />
-          <p className="fu-hint">
-            <span>Supported:</span> Images, PDFs, Documents, Archives · <span>Max size:</span> 10 MB
-          </p>
+    <div className="max-w-6xl mx-auto py-8">
+      {/* Page Header */}
+      <header className="mb-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+          <Shield size={12} /> Encrypted Storage
         </div>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
+          Application <span className="text-indigo-600">Documents.</span>
+        </h1>
+        <p className="text-slate-500 font-medium">Manage and upload your essential credentials for university applications.</p>
+      </header>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Upload Section */}
+        <div className="lg:col-span-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden"
+          >
+            <div className="p-10">
+              <form onSubmit={handleUpload}>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onClick={() => inputRef.current?.click()}
+                  className={`relative group cursor-pointer rounded-[2rem] border-2 border-dashed transition-all duration-500 flex flex-col items-center justify-center p-16 ${
+                    dragOver 
+                      ? "border-indigo-600 bg-indigo-50/50 scale-[0.99]" 
+                      : "border-slate-200 hover:border-indigo-400 hover:bg-slate-50/50"
+                  }`}
+                >
+                  <div className={`w-20 h-20 rounded-3xl mb-6 flex items-center justify-center transition-all duration-500 ${
+                    dragOver ? "bg-indigo-600 text-white scale-110 rotate-12" : "bg-indigo-50 text-indigo-600 group-hover:scale-110"
+                  }`}>
+                    <UploadCloud size={40} />
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-lg font-black text-slate-800 mb-2">Drop your file here</p>
+                    <p className="text-sm font-bold text-slate-400">or <span className="text-indigo-600 underline">browse your device</span></p>
+                  </div>
+
+                  {/* Decorative Elements */}
+                  <div className="absolute top-4 right-4 text-slate-200 opacity-20"><Zap size={40} /></div>
+                </div>
+
+                <AnimatePresence>
+                  {file && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-8 p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center gap-4 group"
+                    >
+                      <div className="w-12 h-12 bg-white rounded-2xl shadow-inner flex items-center justify-center text-2xl">
+                        {getFileIcon(file)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-black text-slate-800 truncate">{file.name}</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{formatSize(file.size)}</p>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                        className="p-2 hover:bg-rose-50 hover:text-rose-500 text-slate-300 transition-all rounded-xl"
+                      >
+                        <X size={20} />
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="mt-8 flex flex-col gap-4">
+                  <button
+                    type="submit"
+                    disabled={loading || !file}
+                    className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm hover:bg-indigo-600 hover:-translate-y-1 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-2xl shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-3"
+                  >
+                    {loading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      <>Push to Vault <Zap size={16} /></>
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {loading && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="space-y-2"
+                      >
+                        <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <span>Uploading...</span>
+                          <span>{progress}%</span>
+                        </div>
+                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${progress}%` }}
+                            className="h-full bg-indigo-600"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </form>
+
+              <AnimatePresence>
+                {message && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className={`mt-6 p-5 rounded-3xl flex items-center gap-4 border ${
+                      message.type === "success" 
+                        ? "bg-emerald-50 border-emerald-100 text-emerald-700" 
+                        : "bg-rose-50 border-rose-100 text-rose-700"
+                    }`}
+                  >
+                    {message.type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                    <p className="text-sm font-bold">{message.text}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Info Sidebar */}
+        <div className="lg:col-span-4 space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full"></div>
+            <h3 className="text-lg font-black mb-6 flex items-center gap-3">
+              <Info size={20} className="text-indigo-400" /> Guidelines
+            </h3>
+            <ul className="space-y-6">
+              {[
+                { label: "Max File Size", value: "10 MB", desc: "Optimized for speed" },
+                { label: "Formats", value: "PDF, JPG, PNG", desc: "Standard app formats" },
+                { label: "Security", value: "256-bit", desc: "AES encrypted vault" }
+              ].map((item, i) => (
+                <li key={i} className="flex gap-4">
+                  <div className="w-1 h-10 bg-indigo-500/30 rounded-full shrink-0"></div>
+                  <div>
+                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{item.label}</p>
+                    <p className="font-bold text-sm mt-0.5">{item.value}</p>
+                    <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-tight">{item.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div 
+             initial={{ opacity: 0, x: 20 }}
+             animate={{ opacity: 1, x: 0 }}
+             transition={{ delay: 0.1 }}
+             className="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-600/20"
+          >
+            <h4 className="text-lg font-black mb-3">Need Assistance?</h4>
+            <p className="text-sm text-indigo-100 font-medium mb-6 leading-relaxed">
+              If you're having trouble uploading certificates, connect with our support team instantly.
+            </p>
+            <button className="w-full py-4 bg-white text-indigo-600 rounded-2xl font-black text-sm hover:bg-indigo-50 transition-all active:scale-95 shadow-lg shadow-black/10">
+              Open Support Hub
+            </button>
+          </motion.div>
+        </div>
+
       </div>
-    </>
+    </div>
   );
 };
 
