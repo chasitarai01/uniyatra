@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import { FaBook, FaGraduationCap, FaClock, FaDollarSign } from "react-icons/fa";
 
 export const Courses = () => {
@@ -70,7 +70,7 @@ export const Courses = () => {
                   <p className="text-gray-600 mb-4">
                     {course.description || 'Course description not available'}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                     {course.duration && (
                       <div className="flex items-center">
@@ -92,7 +92,7 @@ export const Courses = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="ml-4 p-3 bg-indigo-100 rounded-full">
                   <FaBook className="text-indigo-600 text-2xl" />
                 </div>

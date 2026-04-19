@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, Search, User } from "lucide-react";
 import { io } from "socket.io-client";
-import axios from "axios";
+import axios from "../api/axios.js";
 
 import { API_BASE_URL, SOCKET_URL } from "../config";
 
@@ -23,15 +23,15 @@ export default function DirectChatWidget() {
   const currentUser = decodeJwt();
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState("threads"); // "threads", "search", "chat"
-  
+
   const [threads, setThreads] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  
+
   const [activeThread, setActiveThread] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
-  
+
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -119,7 +119,7 @@ export default function DirectChatWidget() {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!text.trim() || !activeThread) return;
-    
+
     try {
       const res = await axios.post(`${API}/threads/${activeThread._id}/messages`, { text }, config);
       // Optimistically add message or rely on socket. For fast UX, add locally:
@@ -158,8 +158,8 @@ export default function DirectChatWidget() {
                 </button>
               ) : null}
               <h3 className="font-semibold">
-                {view === "chat" 
-                  ? getOtherParticipant(activeThread)?.username || "Chat" 
+                {view === "chat"
+                  ? getOtherParticipant(activeThread)?.username || "Chat"
                   : view === "search" ? "Find Users" : "Messages"}
               </h3>
             </div>
@@ -170,11 +170,11 @@ export default function DirectChatWidget() {
 
           {/* Body */}
           <div className="flex-1 overflow-y-auto bg-slate-50 relative">
-            
+
             {/* THREADS VIEW */}
             {view === "threads" && (
               <div className="p-4">
-                <button 
+                <button
                   onClick={() => setView("search")}
                   className="w-full mb-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium border border-indigo-100 flex items-center justify-center gap-2"
                 >
@@ -187,8 +187,8 @@ export default function DirectChatWidget() {
                     {threads.map((t) => {
                       const other = getOtherParticipant(t);
                       return (
-                        <div 
-                          key={t._id} 
+                        <div
+                          key={t._id}
                           onClick={() => { setActiveThread(t); setView("chat"); fetchMessages(t._id); }}
                           className="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:border-indigo-300"
                         >
@@ -211,8 +211,8 @@ export default function DirectChatWidget() {
             {view === "search" && (
               <div className="p-4">
                 <form onSubmit={handleSearch} className="flex gap-2 mb-4">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search name or email..."
@@ -222,8 +222,8 @@ export default function DirectChatWidget() {
                 </form>
                 <div className="space-y-2">
                   {searchResults.map(user => (
-                    <div 
-                      key={user._id} 
+                    <div
+                      key={user._id}
                       onClick={() => startChat(user._id)}
                       className="flex justify-between items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-slate-50"
                     >
@@ -246,9 +246,8 @@ export default function DirectChatWidget() {
                     const isMe = String(m.senderId) === String(currentUser.userId || currentUser.id);
                     return (
                       <div key={m._id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                          isMe ? "bg-indigo-600 text-white rounded-br-sm" : "bg-white border text-slate-800 rounded-bl-sm"
-                        }`}>
+                        <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${isMe ? "bg-indigo-600 text-white rounded-br-sm" : "bg-white border text-slate-800 rounded-bl-sm"
+                          }`}>
                           {m.text}
                         </div>
                       </div>
@@ -257,8 +256,8 @@ export default function DirectChatWidget() {
                   <div ref={messagesEndRef} />
                 </div>
                 <form onSubmit={sendMessage} className="p-3 bg-white border-t flex gap-2">
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Type a message..."

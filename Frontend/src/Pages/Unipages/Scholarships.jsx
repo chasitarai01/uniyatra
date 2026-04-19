@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import { FaMoneyBillWave, FaTrophy, FaCalendarAlt, FaUserGraduate } from "react-icons/fa";
 
 export const Scholarships = () => {
@@ -70,7 +70,7 @@ export const Scholarships = () => {
                   <p className="text-gray-600 mb-4">
                     {scholarship.description || 'Scholarship description not available'}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                     {scholarship.amount && (
                       <div className="flex items-center">
@@ -98,7 +98,7 @@ export const Scholarships = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="ml-4 p-3 bg-green-100 rounded-full">
                   <FaMoneyBillWave className="text-green-600 text-2xl" />
                 </div>

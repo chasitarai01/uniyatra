@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import { Search, GraduationCap, Globe, BookOpen, Banknote, MapPin, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Award, ExternalLink } from "lucide-react";
 
 export default function AllScholarship() {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("All");
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedFaculty, setSelectedFaculty] = useState("All");
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -51,9 +51,9 @@ export default function AllScholarship() {
     const sCoun = s.country || s.Country || "";
     const sLev = s.level || s.Level || "";
 
-    const searchMatch = sName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        sUni.toLowerCase().includes(searchTerm.toLowerCase());
-    
+    const searchMatch = sName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sUni.toLowerCase().includes(searchTerm.toLowerCase());
+
     const countryMatch = selectedCountry === "All" || sCoun === selectedCountry;
     const levelMatch = selectedLevel === "All" || sLev === selectedLevel;
     const facultyMatch = selectedFaculty === "All" || sFac === selectedFaculty;
@@ -101,12 +101,12 @@ export default function AllScholarship() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-20">
-      
+
       {/* Hero Section */}
       <div className="bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop')] opacity-10 bg-cover bg-center"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 to-slate-900/90 mix-blend-multiply"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 py-24 relative z-10 text-center">
           <span className="inline-block py-1 px-3 rounded-full bg-purple-500/20 text-purple-300 font-medium text-sm mb-4 border border-purple-500/30 backdrop-blur-sm">
             Financial Aid
@@ -120,7 +120,7 @@ export default function AllScholarship() {
 
           {/* Search & Filter Bar */}
           <div className="max-w-4xl mx-auto bg-white/10 p-2 rounded-3xl backdrop-blur-md border border-white/20 flex flex-col lg:flex-row gap-2">
-            
+
             {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -132,7 +132,7 @@ export default function AllScholarship() {
                 className="w-full bg-white rounded-2xl pl-12 pr-4 py-3.5 text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-purple-500 transition-shadow"
               />
             </div>
-            
+
             {/* Dropdowns */}
             <div className="flex flex-col sm:flex-row gap-2">
               <select
@@ -142,7 +142,7 @@ export default function AllScholarship() {
               >
                 {countries.map(c => <option key={c} value={c}>{c === "All" ? "All Countries" : c}</option>)}
               </select>
-              
+
               <select
                 value={selectedLevel}
                 onChange={e => setSelectedLevel(e.target.value)}
@@ -172,15 +172,15 @@ export default function AllScholarship() {
           </div>
         ) : loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} />)}
           </div>
         ) : currentScholarships.length === 0 ? (
           <div className="text-center py-20">
             <Award className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-slate-700 mb-2">No Scholarships Found</h3>
             <p className="text-slate-500">Try adjusting your filters or search term.</p>
-            <button 
-              onClick={() => {setSearchTerm(''); setSelectedCountry('All'); setSelectedFaculty('All'); setSelectedLevel('All');}} 
+            <button
+              onClick={() => { setSearchTerm(''); setSelectedCountry('All'); setSelectedFaculty('All'); setSelectedLevel('All'); }}
               className="mt-6 text-purple-600 font-medium hover:underline"
             >
               Clear all filters
@@ -207,7 +207,7 @@ export default function AllScholarship() {
 
                 return (
                   <div key={s._id} className="group bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col relative">
-                    
+
                     {/* Top Accent Bar */}
                     <div className="h-2 w-full bg-gradient-to-r from-purple-500 to-pink-500 absolute top-0 left-0"></div>
 
@@ -227,7 +227,7 @@ export default function AllScholarship() {
 
                     {/* Card Body */}
                     <div className="p-6 flex-1 flex flex-col gap-4">
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
                           <Banknote className="w-4 h-4 text-emerald-600" />
@@ -257,7 +257,7 @@ export default function AllScholarship() {
                           <p className="text-sm font-medium text-slate-700">{sCoun}</p>
                         </div>
                       </div>
-                      
+
                     </div>
 
                     {/* Card Footer */}
@@ -280,7 +280,7 @@ export default function AllScholarship() {
                 <button onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 border border-slate-200 hover:border-purple-600 hover:text-purple-600 disabled:opacity-30 transition-all bg-white shadow-sm">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                
+
                 <div className="hidden sm:flex items-center gap-2 px-2">
                   {getPageNumbers().map((page, i) => (
                     page === '...' ? (

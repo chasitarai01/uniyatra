@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 
 const FavoriteUniversities = () => {
 
@@ -38,7 +38,7 @@ const FavoriteUniversities = () => {
       <h2>Your Favorite Universities</h2>
 
       {favorites.map((fav) => (
-        <div key={fav._id} style={{border:"1px solid #ddd", margin:"10px", padding:"10px"}}>
+        <div key={fav._id} style={{ border: "1px solid #ddd", margin: "10px", padding: "10px" }}>
 
           <img
             src={fav.universityId.Logo}

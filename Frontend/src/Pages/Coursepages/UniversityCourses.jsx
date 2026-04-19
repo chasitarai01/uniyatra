@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import React from "react";
 import { Search, BookOpen, Clock, Banknote, Calendar, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, GraduationCap, ArrowLeft } from "lucide-react";
 
@@ -8,7 +8,7 @@ export default function UniversityCourses() {
   const { code } = useParams();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState("All");
@@ -83,17 +83,17 @@ export default function UniversityCourses() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-20">
-      
+
       {/* Hero Section */}
       <div className="bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=2070&auto=format&fit=crop')] opacity-20 bg-cover bg-center"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-slate-900/90 mix-blend-multiply"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 py-20 relative z-10">
           <Link to="/uni" className="inline-flex items-center gap-2 text-blue-300 hover:text-white transition-colors mb-6 text-sm font-medium">
             <ArrowLeft className="w-4 h-4" /> Back to Universities
           </Link>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Academic <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Programs</span>
           </h1>
@@ -103,7 +103,7 @@ export default function UniversityCourses() {
 
           {/* Search & Filter Bar */}
           <div className="max-w-4xl bg-white/10 p-2 rounded-3xl backdrop-blur-md border border-white/20 flex flex-col lg:flex-row gap-2">
-            
+
             {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -115,7 +115,7 @@ export default function UniversityCourses() {
                 className="w-full bg-white rounded-2xl pl-12 pr-4 py-3 text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
               />
             </div>
-            
+
             {/* Dropdowns */}
             <div className="flex flex-col sm:flex-row gap-2">
               <select
@@ -125,7 +125,7 @@ export default function UniversityCourses() {
               >
                 {faculties.map(f => <option key={f} value={f}>{f === "All" ? "All Faculties" : f}</option>)}
               </select>
-              
+
               <select
                 value={selectedLevel}
                 onChange={e => setSelectedLevel(e.target.value)}
@@ -142,15 +142,15 @@ export default function UniversityCourses() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} />)}
           </div>
         ) : currentCourses.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
             <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-slate-700 mb-2">No Courses Found</h3>
             <p className="text-slate-500">Try adjusting your filters or search term.</p>
-            <button 
-              onClick={() => {setSearchTerm(''); setSelectedFaculty('All'); setSelectedLevel('All');}} 
+            <button
+              onClick={() => { setSearchTerm(''); setSelectedFaculty('All'); setSelectedLevel('All'); }}
               className="mt-6 text-blue-600 font-medium hover:underline"
             >
               Clear all filters
@@ -168,7 +168,7 @@ export default function UniversityCourses() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {currentCourses.map((course) => (
                 <div key={course._id} className="group bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col relative">
-                  
+
                   {/* Top Accent Bar */}
                   <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-cyan-500 absolute top-0 left-0"></div>
 
@@ -184,7 +184,7 @@ export default function UniversityCourses() {
 
                   {/* Card Body */}
                   <div className="p-6 flex-1 flex flex-col gap-4">
-                    
+
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0">
                         <GraduationCap className="w-4 h-4 text-slate-600" />
@@ -215,7 +215,7 @@ export default function UniversityCourses() {
                         <span className="text-sm font-medium">{course.StartDate || "Flexible"}</span>
                       </div>
                     </div>
-                    
+
                   </div>
                 </div>
               ))}
@@ -230,7 +230,7 @@ export default function UniversityCourses() {
                 <button onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 border border-slate-200 hover:border-blue-600 hover:text-blue-600 disabled:opacity-30 transition-all bg-white shadow-sm">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                
+
                 <div className="hidden sm:flex items-center gap-2 px-2">
                   {getPageNumbers().map((page, i) => (
                     page === '...' ? (

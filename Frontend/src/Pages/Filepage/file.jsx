@@ -1,9 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  UploadCloud, File, X, CheckCircle, AlertCircle, 
-  Info, Shield, Zap, FileText, ImageIcon, 
+import {
+  UploadCloud, File, X, CheckCircle, AlertCircle,
+  Info, Shield, Zap, FileText, ImageIcon,
   Film, Music, Archive, Table
 } from "lucide-react";
 
@@ -79,9 +79,9 @@ const FileUpload = () => {
       setMessage({ type: "success", text: "Document uploaded to secure vault successfully!" });
       setFile(null);
     } catch (error) {
-      setMessage({ 
-        type: "error", 
-        text: error.response?.data?.message || "Upload failed. Maximum file size is 10MB." 
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Upload failed. Maximum file size is 10MB."
       });
       setProgress(0);
     } finally {
@@ -103,10 +103,10 @@ const FileUpload = () => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* Upload Section */}
         <div className="lg:col-span-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden"
@@ -125,18 +125,16 @@ const FileUpload = () => {
                   onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                   onDragLeave={() => setDragOver(false)}
                   onClick={() => inputRef.current?.click()}
-                  className={`relative group cursor-pointer rounded-[2rem] border-2 border-dashed transition-all duration-500 flex flex-col items-center justify-center p-16 ${
-                    dragOver 
-                      ? "border-indigo-600 bg-indigo-50/50 scale-[0.99]" 
+                  className={`relative group cursor-pointer rounded-[2rem] border-2 border-dashed transition-all duration-500 flex flex-col items-center justify-center p-16 ${dragOver
+                      ? "border-indigo-600 bg-indigo-50/50 scale-[0.99]"
                       : "border-slate-200 hover:border-indigo-400 hover:bg-slate-50/50"
-                  }`}
+                    }`}
                 >
-                  <div className={`w-20 h-20 rounded-3xl mb-6 flex items-center justify-center transition-all duration-500 ${
-                    dragOver ? "bg-indigo-600 text-white scale-110 rotate-12" : "bg-indigo-50 text-indigo-600 group-hover:scale-110"
-                  }`}>
+                  <div className={`w-20 h-20 rounded-3xl mb-6 flex items-center justify-center transition-all duration-500 ${dragOver ? "bg-indigo-600 text-white scale-110 rotate-12" : "bg-indigo-50 text-indigo-600 group-hover:scale-110"
+                    }`}>
                     <UploadCloud size={40} />
                   </div>
-                  
+
                   <div className="text-center">
                     <p className="text-lg font-black text-slate-800 mb-2">Drop your file here</p>
                     <p className="text-sm font-bold text-slate-400">or <span className="text-indigo-600 underline">browse your device</span></p>
@@ -148,7 +146,7 @@ const FileUpload = () => {
 
                 <AnimatePresence>
                   {file && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
@@ -161,7 +159,7 @@ const FileUpload = () => {
                         <p className="text-sm font-black text-slate-800 truncate">{file.name}</p>
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{formatSize(file.size)}</p>
                       </div>
-                      <button 
+                      <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setFile(null); }}
                         className="p-2 hover:bg-rose-50 hover:text-rose-500 text-slate-300 transition-all rounded-xl"
@@ -187,7 +185,7 @@ const FileUpload = () => {
 
                   <AnimatePresence>
                     {loading && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="space-y-2"
@@ -197,7 +195,7 @@ const FileUpload = () => {
                           <span>{progress}%</span>
                         </div>
                         <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                          <motion.div 
+                          <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
                             className="h-full bg-indigo-600"
@@ -211,14 +209,13 @@ const FileUpload = () => {
 
               <AnimatePresence>
                 {message && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className={`mt-6 p-5 rounded-3xl flex items-center gap-4 border ${
-                      message.type === "success" 
-                        ? "bg-emerald-50 border-emerald-100 text-emerald-700" 
+                    className={`mt-6 p-5 rounded-3xl flex items-center gap-4 border ${message.type === "success"
+                        ? "bg-emerald-50 border-emerald-100 text-emerald-700"
                         : "bg-rose-50 border-rose-100 text-rose-700"
-                    }`}
+                      }`}
                   >
                     {message.type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                     <p className="text-sm font-bold">{message.text}</p>
@@ -231,7 +228,7 @@ const FileUpload = () => {
 
         {/* Info Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden"
@@ -258,11 +255,11 @@ const FileUpload = () => {
             </ul>
           </motion.div>
 
-          <motion.div 
-             initial={{ opacity: 0, x: 20 }}
-             animate={{ opacity: 1, x: 0 }}
-             transition={{ delay: 0.1 }}
-             className="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-600/20"
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-600/20"
           >
             <h4 className="text-lg font-black mb-3">Need Assistance?</h4>
             <p className="text-sm text-indigo-100 font-medium mb-6 leading-relaxed">

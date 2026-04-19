@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShieldCheck, GraduationCap, Award, CheckCircle2, XCircle,
@@ -9,11 +9,11 @@ import {
 import { API_BASE_URL } from "../../config";
 
 const TIER_CONFIG = {
-  Elite:       { color: "amber",  bg: "bg-amber-50",  border: "border-amber-200",  badge: "bg-amber-100 text-amber-700",  icon: "🏆" },
-  Excellence:  { color: "violet", bg: "bg-violet-50", border: "border-violet-200", badge: "bg-violet-100 text-violet-700", icon: "⭐" },
-  Merit:       { color: "blue",   bg: "bg-blue-50",   border: "border-blue-200",   badge: "bg-blue-100 text-blue-700",   icon: "🎯" },
-  Standard:    { color: "emerald",bg: "bg-emerald-50",border: "border-emerald-200",badge: "bg-emerald-100 text-emerald-700",icon: "✅" },
-  Entry:       { color: "teal",   bg: "bg-teal-50",   border: "border-teal-200",   badge: "bg-teal-100 text-teal-700",   icon: "🌱" },
+  Elite: { color: "amber", bg: "bg-amber-50", border: "border-amber-200", badge: "bg-amber-100 text-amber-700", icon: "🏆" },
+  Excellence: { color: "violet", bg: "bg-violet-50", border: "border-violet-200", badge: "bg-violet-100 text-violet-700", icon: "⭐" },
+  Merit: { color: "blue", bg: "bg-blue-50", border: "border-blue-200", badge: "bg-blue-100 text-blue-700", icon: "🎯" },
+  Standard: { color: "emerald", bg: "bg-emerald-50", border: "border-emerald-200", badge: "bg-emerald-100 text-emerald-700", icon: "✅" },
+  Entry: { color: "teal", bg: "bg-teal-50", border: "border-teal-200", badge: "bg-teal-100 text-teal-700", icon: "🌱" },
 };
 
 const MIN_IELTS = 6.0;
@@ -22,10 +22,10 @@ const MIN_GRADE = 50;
 const EligibilityTest = () => {
   const [ieltsScore, setIeltsScore] = useState("");
   const [gradeScore, setGradeScore] = useState("");
-  const [result, setResult]         = useState(null);
-  const [loading, setLoading]       = useState(false);
-  const [error, setError]           = useState("");
-  const [user, setUser]             = useState(null);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -55,10 +55,10 @@ const EligibilityTest = () => {
     }
   };
 
-  const ieltsVal    = Number(ieltsScore) || 0;
-  const gradeVal    = Number(gradeScore) || 0;
-  const ieltsOk     = ieltsVal >= MIN_IELTS;
-  const gradeOk     = gradeVal >= MIN_GRADE;
+  const ieltsVal = Number(ieltsScore) || 0;
+  const gradeVal = Number(gradeScore) || 0;
+  const ieltsOk = ieltsVal >= MIN_IELTS;
+  const gradeOk = gradeVal >= MIN_GRADE;
   const ieltsPercent = (ieltsVal / 9) * 100;
   const gradePercent = gradeVal;
 

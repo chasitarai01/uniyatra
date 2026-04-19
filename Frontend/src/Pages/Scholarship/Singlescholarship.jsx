@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
-import { 
-  Award, Building2, MapPin, GraduationCap, 
-  DollarSign, Users, Info, ExternalLink, ArrowLeft 
+import axios from "../../api/axios.js";
+import {
+  Award, Building2, MapPin, GraduationCap,
+  DollarSign, Users, Info, ExternalLink, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -49,12 +49,12 @@ const SingleScholarship = () => {
   );
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 pb-20"
     >
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-bold transition-all"
       >
@@ -88,7 +88,7 @@ const SingleScholarship = () => {
                   <Info className="text-indigo-600" /> Description & Criteria
                 </h3>
                 <div className="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed">
-                   {scholarship.Criteria?.split("\\n").map((line, index) => (
+                  {scholarship.Criteria?.split("\\n").map((line, index) => (
                     <p key={index} className="mb-4">{line}</p>
                   ))}
                 </div>
@@ -100,9 +100,9 @@ const SingleScholarship = () => {
                   {scholarship["How to Apply"] || "Contact the university's financial aid office for detailed application instructions."}
                 </p>
                 {scholarship.Link && (
-                  <a 
-                    href={scholarship.Link} 
-                    target="_blank" 
+                  <a
+                    href={scholarship.Link}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-8 py-3.5 bg-indigo-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-indigo-600/20 hover:scale-105 transition-all"
                   >
@@ -113,22 +113,22 @@ const SingleScholarship = () => {
             </div>
 
             <div className="space-y-6">
-               {[
-                 { label: "Faculty", value: scholarship.Faculty, icon: Building2, color: "text-blue-600", bg: "bg-blue-50" },
-                 { label: "Level", value: scholarship.Level, icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50" },
-                 { label: "Benefit", value: scholarship.ScholarshipValue, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
-                 { label: "Awards", value: scholarship.NoOfAwardsAvailable, icon: Users, color: "text-amber-600", bg: "bg-amber-50" },
-               ].map((item, i) => (
-                 <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center gap-4">
-                   <div className={`w-12 h-12 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center shrink-0`}>
-                     <item.icon size={20} />
-                   </div>
-                   <div>
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                     <p className="text-sm font-black text-slate-800">{item.value || "Not Specified"}</p>
-                   </div>
-                 </div>
-               ))}
+              {[
+                { label: "Faculty", value: scholarship.Faculty, icon: Building2, color: "text-blue-600", bg: "bg-blue-50" },
+                { label: "Level", value: scholarship.Level, icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50" },
+                { label: "Benefit", value: scholarship.ScholarshipValue, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
+                { label: "Awards", value: scholarship.NoOfAwardsAvailable, icon: Users, color: "text-amber-600", bg: "bg-amber-50" },
+              ].map((item, i) => (
+                <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center gap-4">
+                  <div className={`w-12 h-12 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center shrink-0`}>
+                    <item.icon size={20} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
+                    <p className="text-sm font-black text-slate-800">{item.value || "Not Specified"}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

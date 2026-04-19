@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axios.js";
 import {
   FaFacebook,
   FaTwitter,
@@ -218,8 +218,8 @@ export const SingleUni = () => {
               ${toast.type === "success"
                 ? "bg-green-500"
                 : toast.type === "info"
-                ? "bg-yellow-500"
-                : "bg-red-500"
+                  ? "bg-yellow-500"
+                  : "bg-red-500"
               }`}
           >
             {toast.type === "success" && <FaCheckCircle />}
@@ -232,10 +232,10 @@ export const SingleUni = () => {
 
       {/* University Cover */}
       <div className="relative h-64 md:h-80 rounded-t-xl overflow-hidden">
-        <img 
-          src={university.Cover} 
-          alt="University Cover" 
-          className="w-full h-full object-cover" 
+        <img
+          src={university.Cover}
+          alt="University Cover"
+          className="w-full h-full object-cover"
           onError={(e) => {
             e.target.src = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop";
           }}
@@ -258,10 +258,10 @@ export const SingleUni = () => {
           </div>
         </div>
         <div className="absolute top-4 left-4 md:top-6 md:left-6 w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden">
-          <img 
-            src={university.Logo} 
-            alt={university.University} 
-            className="w-full h-full object-contain p-2" 
+          <img
+            src={university.Logo}
+            alt={university.University}
+            className="w-full h-full object-contain p-2"
             onError={(e) => {
               e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
             }}
@@ -281,12 +281,11 @@ export const SingleUni = () => {
             disabled={favLoading}
             className={`relative inline-flex items-center px-6 py-2.5 rounded-full shadow-md font-medium transition-all duration-300
               ${favLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-              ${
-                isFavorite
-                  ? clickCount === 1
-                    ? "bg-red-600 text-white ring-4 ring-red-300 ring-offset-1 scale-105"
-                    : "bg-red-500 text-white"
-                  : "bg-red-100 text-red-600 hover:bg-red-200"
+              ${isFavorite
+                ? clickCount === 1
+                  ? "bg-red-600 text-white ring-4 ring-red-300 ring-offset-1 scale-105"
+                  : "bg-red-500 text-white"
+                : "bg-red-100 text-red-600 hover:bg-red-200"
               }`}
           >
             {isFavorite && clickCount === 1 && (
@@ -302,10 +301,10 @@ export const SingleUni = () => {
             {favLoading
               ? "Updating..."
               : isFavorite
-              ? clickCount === 1
-                ? "Click again to remove ✕"
-                : "Saved to Favorites"
-              : "Add to Favorites"}
+                ? clickCount === 1
+                  ? "Click again to remove ✕"
+                  : "Saved to Favorites"
+                : "Add to Favorites"}
           </motion.button>
 
           <AnimatePresence>
@@ -386,8 +385,8 @@ export const SingleUni = () => {
 
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-center gap-4 mt-8">
-        <Link to={location.pathname.startsWith("/dashboard") 
-          ? `/dashboard/university/${university._id}/courses` 
+        <Link to={location.pathname.startsWith("/dashboard")
+          ? `/dashboard/university/${university._id}/courses`
           : `/courses/${university.UniversityCode}`}
         >
           <motion.button
@@ -397,8 +396,8 @@ export const SingleUni = () => {
             View Courses
           </motion.button>
         </Link>
-        <Link to={location.pathname.startsWith("/dashboard") 
-          ? `/dashboard/university/${university._id}/scholarships` 
+        <Link to={location.pathname.startsWith("/dashboard")
+          ? `/dashboard/university/${university._id}/scholarships`
           : `/uni/${university._id}/scholarships`}
         >
           <motion.button
