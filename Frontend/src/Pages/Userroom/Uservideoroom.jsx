@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
-import { SOCKET_URL } from "../../config";
+import { SOCKET_URL, API_BASE_URL } from "../../config";
 
 const ICE_SERVERS = {
   iceServers: [
@@ -217,7 +217,7 @@ export default function UserVideoRoom() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`/api/rooms/${roomCode}`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE_URL}/api/rooms/${roomCode}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { if (d.success) setRoomInfo(d.room); else setLoadErr(d.message || "Room not found"); })
       .catch(() => setLoadErr("Cannot reach server"));
@@ -271,7 +271,7 @@ export default function UserVideoRoom() {
       if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
 
       const token = localStorage.getItem("token");
-      await fetch(`/api/rooms/${roomCode}/join`, {
+      await fetch(`${API_BASE_URL}/api/rooms/${roomCode}/join`, {
         method: "POST", headers: { Authorization: `Bearer ${token}` },
       });
 
