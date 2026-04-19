@@ -64,7 +64,7 @@ app.use("/api/direct-chat", directChatRoutes);
 app.use("/api/cost-estimator", costRoutes);
 
 // Fallback for React Router
-app.get("*", (req, res) => {
+app.get(/.*/, (req, res) => {
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ message: "API route not found" });
   }
