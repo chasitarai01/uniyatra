@@ -14,7 +14,7 @@ const FavoriteUniversities = () => {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          "http://localhost:5001/api/favorites",
+          "/api/favorites",
           {
             headers: {
               Authorization: `Bearer ${token}`,

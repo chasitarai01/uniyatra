@@ -14,11 +14,11 @@ export const Courses = () => {
     const fetchCourses = async () => {
       try {
         // Fetch university details
-        const uniResponse = await axios.get(`http://localhost:5001/api/universities/${id}`);
+        const uniResponse = await axios.get(`/api/universities/${id}`);
         setUniversity(uniResponse.data.data);
 
         // Fetch courses for this university using the new API endpoint
-        const coursesResponse = await axios.get(`http://localhost:5001/api/courses/university/${id}`);
+        const coursesResponse = await axios.get(`/api/courses/university/${id}`);
         setCourses(coursesResponse.data.data || []);
       } catch (err) {
         console.error("Error fetching university data:", err);

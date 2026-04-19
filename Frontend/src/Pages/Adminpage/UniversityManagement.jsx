@@ -26,7 +26,7 @@ const UniversityManagement = () => {
   const fetchUniversities = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5001/api/universities");
+      const response = await fetch("/api/universities");
       const data = await response.json();
       setUniversities(data.data || []);
     } catch (err) {
@@ -72,8 +72,8 @@ const UniversityManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editingUni 
-      ? `http://localhost:5001/api/universities/${editingUni._id}`
-      : "http://localhost:5001/api/universities";
+      ? `/api/universities/${editingUni._id}`
+      : "/api/universities";
     
     const method = editingUni ? "PUT" : "POST";
 
@@ -97,7 +97,7 @@ const UniversityManagement = () => {
     if (!window.confirm("Are you sure you want to delete this university?")) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/universities/${code}`, {
+      const response = await fetch(`/api/universities/${code}`, {
         method: "DELETE"
       });
       if (response.ok) fetchUniversities();

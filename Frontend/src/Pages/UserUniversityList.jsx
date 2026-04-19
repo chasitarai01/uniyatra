@@ -18,7 +18,7 @@ const UserUniversityList = () => {
 
   const fetchUniversities = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/universities");
+      const response = await fetch("/api/universities");
       const result = await response.json();
       setUniversities(result.data || []);
     } catch (err) {

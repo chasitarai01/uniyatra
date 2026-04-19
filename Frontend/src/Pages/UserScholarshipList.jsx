@@ -19,7 +19,7 @@ const UserScholarshipList = () => {
 
   const fetchScholarships = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/scholarships");
+      const response = await fetch("/api/scholarships");
       const result = await response.json();
       setScholarships(result.data || result || []);
     } catch (err) {

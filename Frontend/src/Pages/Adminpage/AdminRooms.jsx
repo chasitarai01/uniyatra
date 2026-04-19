@@ -48,8 +48,8 @@ export default function AdminRooms() {
     setLoading(true);
     try {
       const [roomRes, userRes] = await Promise.all([
-        fetch("http://localhost:5001/api/rooms", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:5001/api/auth/users", { headers: { Authorization: `Bearer ${token}` } })
+        fetch("/api/rooms", { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/auth/users", { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       const roomData = await roomRes.json();
@@ -70,7 +70,7 @@ export default function AdminRooms() {
   const createRoom = async () => {
     if (!form.title.trim()) return;
     try {
-      const res = await fetch("http://localhost:5001/api/rooms", {
+      const res = await fetch("/api/rooms", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(form),
@@ -81,7 +81,7 @@ export default function AdminRooms() {
         // Send notifications to selected users
         if (selectedUsers.length > 0) {
           await Promise.all(selectedUsers.map(userId => 
-            fetch("http://localhost:5001/api/notifications", {
+            fetch("/api/notifications", {
               method: "POST",
               headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
               body: JSON.stringify({
@@ -109,7 +109,7 @@ export default function AdminRooms() {
 
   const closeRoom = async (code) => {
     try {
-      await fetch(`http://localhost:5001/api/rooms/${code}/close`, {
+      await fetch(`/api/rooms/${code}/close`, {
         method: "PUT", headers: { Authorization: `Bearer ${token}` },
       });
       loadData(); 
@@ -120,7 +120,7 @@ export default function AdminRooms() {
   const deleteRoom = async (code) => {
     if (!window.confirm("Delete this room permanently?")) return;
     try {
-      await fetch(`http://localhost:5001/api/rooms/${code}`, {
+      await fetch(`/api/rooms/${code}`, {
         method: "DELETE", headers: { Authorization: `Bearer ${token}` },
       });
       loadData(); 

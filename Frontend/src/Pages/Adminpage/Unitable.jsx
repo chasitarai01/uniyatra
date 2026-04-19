@@ -10,7 +10,7 @@ const UniversityTable = () => {
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/universities");
+        const response = await fetch("/api/universities");
         const data = await response.json();
 
         if (!response.ok) {

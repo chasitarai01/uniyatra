@@ -14,11 +14,11 @@ export const Scholarships = () => {
     const fetchScholarships = async () => {
       try {
         // Fetch university details
-        const uniResponse = await axios.get(`http://localhost:5001/api/universities/${id}`);
+        const uniResponse = await axios.get(`/api/universities/${id}`);
         setUniversity(uniResponse.data.data);
 
         // Fetch scholarships for this university using the new API endpoint
-        const scholarshipsResponse = await axios.get(`http://localhost:5001/api/scholarships/university/${id}`);
+        const scholarshipsResponse = await axios.get(`/api/scholarships/university/${id}`);
         setScholarships(scholarshipsResponse.data.data || []);
       } catch (err) {
         console.error("Error fetching university data:", err);

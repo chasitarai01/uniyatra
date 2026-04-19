@@ -27,7 +27,7 @@ export default function AllScholarship() {
 
   const fetchScholarships = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/api/scholarships");
+      const res = await axios.get("/api/scholarships");
       if (res.data.success && Array.isArray(res.data.scholarships)) {
         setScholarships(res.data.scholarships);
       } else {

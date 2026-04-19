@@ -28,7 +28,7 @@ export default function UniversityCourses() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get(`http://localhost:5001/api/courses/university/${code}`);
+      const res = await axios.get(`/api/courses/university/${code}`);
       setCourses(res.data.data || []);
     } catch (err) {
       console.error(err);

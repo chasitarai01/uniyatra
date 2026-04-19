@@ -67,9 +67,9 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const [u, c, s] = await Promise.all([
-          fetch("http://localhost:5001/api/universities").then(res => res.json()),
-          fetch("http://localhost:5001/api/courses").then(res => res.json()),
-          fetch("http://localhost:5001/api/scholarships").then(res => res.json())
+          fetch("/api/universities").then(res => res.json()),
+          fetch("/api/courses").then(res => res.json()),
+          fetch("/api/scholarships").then(res => res.json())
         ]);
         setStats({
           unis: (u.data || []).length,

@@ -57,7 +57,7 @@ export const SingleUni = () => {
   useEffect(() => {
     const fetchSingleUniversity = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5001/api/universities/${id}`);
+        const { data } = await axios.get(`/api/universities/${id}`);
         setUniversity(data.data);
       } catch (err) {
         setError("Failed to fetch university data");
@@ -73,7 +73,7 @@ export const SingleUni = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const response = await axios.get("http://localhost:5001/api/favorites", {
+      const response = await axios.get("/api/favorites", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -119,7 +119,7 @@ export const SingleUni = () => {
     setFavLoading(true);
     try {
       await axios.post(
-        "http://localhost:5001/api/favorites",
+        "/api/favorites",
         { universityId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -147,7 +147,7 @@ export const SingleUni = () => {
     }
     setFavLoading(true);
     try {
-      await axios.delete("http://localhost:5001/api/favorites", {
+      await axios.delete("/api/favorites", {
         data: { universityId: id },
         headers: { Authorization: `Bearer ${token}` },
       });

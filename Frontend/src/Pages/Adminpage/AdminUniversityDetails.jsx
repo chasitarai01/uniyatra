@@ -16,7 +16,7 @@ const AdminUniversityDetails = () => {
   useEffect(() => {
     const fetchUniversity = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/universities/${id}`);
+        const response = await fetch(`/api/universities/${id}`);
         const result = await response.json();
         setUniversity(result.data);
       } catch (err) {

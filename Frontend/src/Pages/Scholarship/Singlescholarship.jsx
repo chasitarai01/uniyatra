@@ -18,7 +18,7 @@ const SingleScholarship = () => {
   useEffect(() => {
     const fetchScholarship = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/scholarships/${id}`);
+        const res = await axios.get(`/api/scholarships/${id}`);
         if (res.data.success && res.data.data) {
           setScholarship(res.data.data);
         } else {

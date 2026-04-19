@@ -37,6 +37,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve Static Files (Production)
+const frontendPath = path.join(__dirname, "../Frontend/dist");
+app.use(express.static(frontendPath));
+
 // Routes
 app.use("/api/auth", userroute);
 app.use("/api/universities", universityRoutes);
@@ -53,8 +63,16 @@ app.use("/api/support-chat", supportChatRoutes);
 app.use("/api/direct-chat", directChatRoutes);
 app.use("/api/cost-estimator", costRoutes);
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
+// Fallback for React Router
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ message: "API route not found" });
+  }
+  res.sendFile(path.join(frontendPath, "index.html"), (err) => {
+    if (err) {
+      res.status(500).send("Frontend build not found. Please run 'npm run build' in the Frontend directory.");
+    }
+  });
 });
 
 // ⚡ Create HTTP server and attach Socket.IO with production-grade CORS

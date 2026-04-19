@@ -13,7 +13,7 @@ const ScholarshipsByUniversity = () => {
   useEffect(() => {
     const fetchScholarships = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/scholarships/university/${id}`);
+        const res = await axios.get(`/api/scholarships/university/${id}`);
         const data = Array.isArray(res.data.scholarships)
           ? res.data.scholarships
           : res.data.scholarships ? [res.data.scholarships] : [];

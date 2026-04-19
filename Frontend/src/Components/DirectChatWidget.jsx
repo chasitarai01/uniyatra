@@ -3,7 +3,7 @@ import { MessageCircle, X, Send, Search, User } from "lucide-react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const BASE_URL = import.meta.env.VITE_API_URL || "";
 const API = `${BASE_URL}/api/direct-chat`;
 
 const token = () => localStorage.getItem("token");

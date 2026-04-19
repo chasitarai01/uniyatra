@@ -29,7 +29,7 @@ export default function UniversityListing() {
 
   const fetchUniversities = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/universities');
+      const response = await fetch('/api/universities');
       if (!response.ok) throw new Error('Failed to fetch universities');
       const result = await response.json();
       const uniArray = Array.isArray(result) ? result : Array.isArray(result.data) ? result.data : [];

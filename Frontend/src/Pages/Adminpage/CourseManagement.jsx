@@ -29,8 +29,8 @@ const CourseManagement = () => {
     setLoading(true);
     try {
       const [coursesRes, unisRes] = await Promise.all([
-        fetch("http://localhost:5001/api/courses"),
-        fetch("http://localhost:5001/api/universities")
+        fetch("/api/courses"),
+        fetch("/api/universities")
       ]);
       const coursesData = await coursesRes.json();
       const unisData = await unisRes.json();
@@ -83,8 +83,8 @@ const CourseManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editingCourse 
-      ? `http://localhost:5001/api/courses/${editingCourse._id}`
-      : "http://localhost:5001/api/courses";
+      ? `/api/courses/${editingCourse._id}`
+      : "/api/courses";
     
     const method = editingCourse ? "PUT" : "POST";
 
@@ -108,7 +108,7 @@ const CourseManagement = () => {
     if (!window.confirm("Are you sure you want to delete this course?")) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/courses/${id}`, {
+      const response = await fetch(`/api/courses/${id}`, {
         method: "DELETE"
       });
       if (response.ok) fetchData();

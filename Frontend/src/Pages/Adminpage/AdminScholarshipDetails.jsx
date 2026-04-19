@@ -16,7 +16,7 @@ const AdminScholarshipDetails = () => {
   useEffect(() => {
     const fetchScholarship = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/scholarships/${id}`);
+        const response = await fetch(`/api/scholarships/${id}`);
         const result = await response.json();
         setScholarship(result.data || result);
       } catch (err) {

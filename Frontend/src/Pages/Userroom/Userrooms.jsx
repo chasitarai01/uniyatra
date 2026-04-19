@@ -25,7 +25,7 @@ export default function UserRooms() {
     const load = async () => {
       setLoading(true);
       try {
-        const res  = await fetch("http://localhost:5001/api/rooms", { headers: { Authorization: `Bearer ${token}` } });
+        const res  = await fetch(`${API_BASE_URL}/api/rooms`, { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
         setRooms((data.rooms || []).filter(r => r.isActive));
       } catch (e) { console.error(e); }
@@ -39,7 +39,7 @@ export default function UserRooms() {
     if (!code) return;
     setCodeErr("");
     try {
-      const res  = await fetch(`http://localhost:5001/api/rooms/${code}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res  = await fetch(`/api/rooms/${code}`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) navigate(`/room/${code}`);
       else setCodeErr(data.message || "Room not found");

@@ -18,7 +18,7 @@ const ChecklistPage = () => {
       setError(null);
 
       const response = await axios.post(
-        'http://localhost:5001/api/checklist/create',
+        '/api/checklist/create',
         {},
         { headers: { Authorization: `Bearer ${token}` } } // ✅ correct format
       );
@@ -62,7 +62,7 @@ const ChecklistPage = () => {
       setChecklists(updatedChecklists);
 
       const response = await axios.patch(
-        `http://localhost:5001/api/checklist/${checklistId}/toggle`,
+        `/api/checklist/${checklistId}/toggle`,
         { itemIndex },
         { headers: { Authorization: `Bearer ${token}` } } // ✅ correct format
       );
@@ -79,7 +79,7 @@ const ChecklistPage = () => {
         console.log(`Checklist ${checklistId} is now 100% complete!`);
 
         await axios.patch(
-          `http://localhost:5001/api/checklist/${checklistId}/complete`,
+          `/api/checklist/${checklistId}/complete`,
           {},
           { headers: { Authorization: `Bearer ${token}` } } // ✅ correct format
         );

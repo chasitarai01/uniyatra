@@ -271,7 +271,7 @@ const UserNotifications = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5001/api/notifications", {
+        const res = await fetch("/api/notifications", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error();
@@ -294,7 +294,7 @@ const UserNotifications = () => {
   const markAsRead = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:5001/api/notifications/${id}/read`, {
+      await fetch(`/api/notifications/${id}/read`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
       });

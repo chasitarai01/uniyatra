@@ -1,4 +1,11 @@
 {
+  "name": "uniyatra-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install:all": "npm install && cd Frontend && npm install && cd ../Backend && npm install",
+    "build:all": "cd Frontend && npm install && npm run build",
+    "start": "cd Backend && npm start"
+  },
   "devDependencies": {
     "debug": "^4.4.3"
   }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, GraduationCap, Award, CheckCircle2, XCircle, Loader2, Sparkles, ChevronRight, User } from "lucide-react";
+import { API_BASE_URL } from "../../config";
 
 const EligibilityTest = () => {
   const [ieltsScore, setIeltsScore] = useState("");
@@ -32,13 +33,13 @@ const EligibilityTest = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:5001/api/eligibility/test",
+        `${API_BASE_URL}/api/eligibility/test`,
         { ieltsScore: Number(ieltsScore), gradeScore: Number(gradeScore) },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEligibility(res.data);
 
-      const uniRes = await axios.get("http://localhost:5001/api/universities");
+      const uniRes = await axios.get(`${API_BASE_URL}/api/universities`);
       const uniArray = Array.isArray(uniRes.data)
         ? uniRes.data
         : Array.isArray(uniRes.data.universities)

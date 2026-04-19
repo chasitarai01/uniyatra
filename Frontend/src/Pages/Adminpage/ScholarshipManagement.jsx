@@ -26,8 +26,8 @@ const ScholarshipManagement = () => {
     setLoading(true);
     try {
       const [scholarRes, unisRes] = await Promise.all([
-        fetch("http://localhost:5001/api/scholarships"),
-        fetch("http://localhost:5001/api/universities")
+        fetch("/api/scholarships"),
+        fetch("/api/universities")
       ]);
       const scholarData = await scholarRes.json();
       const unisData = await unisRes.json();
@@ -72,8 +72,8 @@ const ScholarshipManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editingScholarship 
-      ? `http://localhost:5001/api/scholarships/${editingScholarship._id}`
-      : "http://localhost:5001/api/scholarships";
+      ? `/api/scholarships/${editingScholarship._id}`
+      : "/api/scholarships";
     
     const method = editingScholarship ? "PUT" : "POST";
 
@@ -97,7 +97,7 @@ const ScholarshipManagement = () => {
     if (!window.confirm("Are you sure you want to delete this scholarship?")) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/scholarships/${id}`, {
+      const response = await fetch(`/api/scholarships/${id}`, {
         method: "DELETE"
       });
       if (response.ok) fetchData();
