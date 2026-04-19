@@ -11,6 +11,7 @@ import {
 
 import { API_BASE_URL } from "../../config";
 const API_BASE = API_BASE_URL;
+console.log("[DEBUG] CostEstimator using API_BASE:", API_BASE);
 
 export default function CostEstimator() {
   const [configs, setConfigs] = useState([]);
