@@ -1,25 +1,17 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "Frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "https://your-backend-url.onrender.com/api/$1"
+      "source": "/api/(.*)",
+      "destination": "https://your-backend-url.onrender.com/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/Frontend/dist/$1",
+      "source": "/(.*)",
+      "destination": "/public/$1",
       "check": true
     },
     {
-      "src": "/(.*)",
-      "dest": "/Frontend/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/public/index.html"
     }
   ]
 }
