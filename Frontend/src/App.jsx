@@ -62,7 +62,8 @@ const Layout = ({ children }) => {
                   location.pathname.startsWith('/classes') ||
                   location.pathname.startsWith('/reminder') ||
                   location.pathname.startsWith('/support-chat') ||
-                  location.pathname.startsWith('/cost-estimator');
+                  location.pathname.startsWith('/cost-estimator') ||
+                  location.pathname.startsWith('/room/');
   
   return (
     <>
@@ -109,11 +110,13 @@ function App() {
             <Route path="/fav" element={<FavoriteUniversities />} />
             <Route path="/notification" element={<UserNotifications/>} />
             <Route path="/classes" element={<UserRooms />} />
-            <Route path="/room/:roomCode" element={<UserVideoRoom />} />
             <Route path="/reminder" element={<UserReminders />} />
             <Route path="/support-chat" element={<SupportDashboard />} />
-            <Route path="/cost-estimator" element={<CostEstimator />} />
           </Route>
+
+          {/* Standalone full-screen routes (no sidebar) */}
+          <Route path="/room/:roomCode" element={<UserVideoRoom />} />
+          <Route path="/cost-estimator" element={<CostEstimator />} />
 
           {/* admin */}
           <Route element={<AdminLayout />}>
@@ -127,8 +130,8 @@ function App() {
             <Route path="/admin/users" element={<AdminUserManagement />} />
             <Route path="/admin/notifications" element={<NotificationForm />} />
             <Route path="/admin/rooms" element={<AdminRooms />} />
-            <Route path="/admin/room/:roomCode" element={<AdminVideoRoom />} />
           </Route>
+          <Route path="/admin/room/:roomCode" element={<AdminVideoRoom />} />
         </Routes>
         <SmartAssistant />
       </Layout>

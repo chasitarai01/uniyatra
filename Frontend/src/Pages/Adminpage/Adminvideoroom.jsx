@@ -1,12 +1,12 @@
 // pages/admin/AdminVideoRoom.jsx
-// Route: /room/:roomCode   (shared with user, admin sees extra controls)
-// This is the ADMIN version — has "End Class for All" and participant management
+// Route: /admin/room/:roomCode
+// Admin version — has "End Class for All" and participant management
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { SOCKET_URL } from "../../config";
 
-const SOCKET_URL  = "";
 const ICE_SERVERS = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
