@@ -14,7 +14,8 @@ export const isAuthenticated = async (req, res, next) => {
     : token;
 
   try {
-    const decoded = jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET);
+    const SECRET = process.env.JWT_SECRET || 'fallback_secret_uniyatra_2024';
+    const decoded = jwt.verify(tokenWithoutBearer, SECRET);
     console.log("Decoded token:", decoded);
 
     const userData = await User.findById(decoded.userId);

@@ -56,7 +56,8 @@ export default function AdminRooms() {
       const userData = await userRes.json();
       
       setRooms(roomData.rooms || []);
-      setAvailableUsers(userData.data || userData || []);
+      // Handle the case where backend returns { total, users }
+      setAvailableUsers(userData.users || userData.data || (Array.isArray(userData) ? userData : []));
     } catch (e) { 
       console.error(e); 
     } finally { 
@@ -134,7 +135,7 @@ export default function AdminRooms() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
-  const filteredUsers = availableUsers.filter(u => 
+  const filteredUsers = (Array.isArray(availableUsers) ? availableUsers : []).filter(u => 
     u.name?.toLowerCase().includes(userSearch.toLowerCase()) || 
     u.email?.toLowerCase().includes(userSearch.toLowerCase())
   );

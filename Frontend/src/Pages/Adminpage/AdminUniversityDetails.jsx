@@ -77,7 +77,14 @@ const AdminUniversityDetails = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
           <div className="w-40 h-40 rounded-[2.5rem] bg-white border-4 border-white/20 p-6 flex items-center justify-center shadow-2xl shrink-0">
              {university.Logo ? (
-               <img src={university.Logo} alt="" className="w-full h-full object-contain" />
+               <img 
+                 src={university.Logo} 
+                 alt="" 
+                 className="w-full h-full object-contain" 
+                 onError={(e) => {
+                   e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
+                 }}
+               />
              ) : (
                <FaUniversity className="text-slate-200 text-6xl" />
              )}
@@ -178,7 +185,14 @@ const AdminUniversityDetails = () => {
              <h3 className="text-lg font-black text-slate-800 mb-6 tracking-tight">University Cover</h3>
              <div className="aspect-video rounded-3xl overflow-hidden bg-slate-100 relative group">
                 {university.Cover ? (
-                  <img src={university.Cover} alt="" className="w-full h-full object-cover" />
+                  <img 
+                    src={university.Cover} 
+                    alt="" 
+                    className="w-full h-full object-cover" 
+                    onError={(e) => {
+                      e.target.src = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop";
+                    }}
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-300">No Cover Uploaded</div>
                 )}

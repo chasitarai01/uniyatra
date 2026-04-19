@@ -6,7 +6,11 @@ import { sendEmail } from '../utils/email.js';
 import dotenv from 'dotenv';
 dotenv.config(); //variables are loaded
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallbacksecret'; // fallback for dev
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.warn("WARNING: JWT_SECRET is not defined in environment variables. Falling back to insecure secret for development.");
+}
+const ACTUAL_SECRET = JWT_SECRET || 'fallback_secret_uniyatra_2024';
 
 // ... previous methods ...
 
@@ -145,7 +149,7 @@ export const login = async (req, res) => {
     // Sign JWT
     const token = jwt.sign(
       { userId: user._id, role: user.role || 'user' },
-      JWT_SECRET,
+      ACTUAL_SECRET,
       { expiresIn: '1h' }
     );
 

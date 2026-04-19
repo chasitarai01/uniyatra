@@ -177,7 +177,14 @@ const UniversityManagement = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                           {uni.Logo ? (
-                            <img src={uni.Logo} alt="" className="w-full h-full object-contain" />
+                            <img 
+                              src={uni.Logo} 
+                              alt="" 
+                              className="w-full h-full object-contain" 
+                              onError={(e) => {
+                                e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
+                              }}
+                            />
                           ) : (
                             <FaUniversity className="text-slate-300 text-xl" />
                           )}
