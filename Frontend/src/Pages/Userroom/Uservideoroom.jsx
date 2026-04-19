@@ -223,6 +223,23 @@ export default function UserVideoRoom() {
       .catch(() => setLoadErr("Cannot reach server"));
   }, [roomCode]);
 
+  // Start camera preview in lobby
+  useEffect(() => {
+    if (phase === "lobby") {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+          localStreamRef.current = stream;
+          if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+        })
+        .catch(err => setLoadErr("Camera/mic access denied: " + err.message));
+    }
+    return () => {
+      if (phase === "lobby") {
+        localStreamRef.current?.getTracks().forEach(t => t.stop());
+      }
+    };
+  }, [phase]);
+
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const createPC = useCallback((remoteId) => {
@@ -246,16 +263,24 @@ export default function UserVideoRoom() {
 
   const joinCall = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      localStreamRef.current = stream;
-      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+      // Don't re-request camera — already started in lobby preview
+      if (!localStreamRef.current) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localStreamRef.current = stream;
+      }
+      if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
 
       const token = localStorage.getItem("token");
       await fetch(`/api/rooms/${roomCode}/join`, {
         method: "POST", headers: { Authorization: `Bearer ${token}` },
       });
 
-      const socket = io(SOCKET_URL);
+      const socket = io(SOCKET_URL, {
+        transports: ["websocket"],
+        withCredentials: false,
+        reconnectionAttempts: 5,
+        timeout: 10000,
+      });
       socketRef.current = socket;
 
       socket.emit("join-room", { roomCode, userId: user?._id || user?.id, username: myName });

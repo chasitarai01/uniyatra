@@ -48,27 +48,15 @@ import SmartAssistant from "./Components/SmartAssistant.jsx";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideNav = location.pathname.startsWith('/admin') || 
-                  location.pathname.startsWith('/dashboard') ||
-                  location.pathname === '/login' ||
-                  location.pathname === '/register' ||
-                  location.pathname === '/forgot-password' ||
-                  location.pathname.startsWith('/reset-password') ||
-                  location.pathname.startsWith('/file') ||
-                  location.pathname.startsWith('/checklist') ||
-                  location.pathname.startsWith('/test') ||
-                  location.pathname.startsWith('/fav') ||
-                  location.pathname.startsWith('/notification') ||
-                  location.pathname.startsWith('/classes') ||
-                  location.pathname.startsWith('/reminder') ||
-                  location.pathname.startsWith('/support-chat') ||
-                  location.pathname.startsWith('/cost-estimator') ||
-                  location.pathname.startsWith('/room/');
+  // Only show public nav on truly public pages
+  const showNav = ['/home', '/uni', '/scholarship', '/courses'].some(p =>
+    location.pathname === p || location.pathname.startsWith(p + '/')
+  );
   
   return (
     <>
-      {!hideNav && <Nav />}
-      {!hideNav && <DirectChatWidget />}
+      {showNav && <Nav />}
+      {showNav && <DirectChatWidget />}
       {children}
     </>
   );
@@ -112,11 +100,11 @@ function App() {
             <Route path="/classes" element={<UserRooms />} />
             <Route path="/reminder" element={<UserReminders />} />
             <Route path="/support-chat" element={<SupportDashboard />} />
+            <Route path="/cost-estimator" element={<CostEstimator />} />
           </Route>
 
-          {/* Standalone full-screen routes (no sidebar) */}
+          {/* Standalone full-screen routes (no sidebar/navbar) */}
           <Route path="/room/:roomCode" element={<UserVideoRoom />} />
-          <Route path="/cost-estimator" element={<CostEstimator />} />
 
           {/* admin */}
           <Route element={<AdminLayout />}>

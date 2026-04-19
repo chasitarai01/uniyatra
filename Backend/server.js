@@ -33,7 +33,18 @@ const app = express();
 const port = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "https://uniyatra.vercel.app",
+  "https://uniyatra-puf6gxgmj-chasitarai-9465s-projects.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, cb) => cb(null, true), // allow all for API
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -79,12 +90,13 @@ app.get(/.*/, (req, res) => {
 const server = createServer(app); 
 const io = new Server(server, {
   cors: {
-    origin: "*", // In production, replace with your specific domain
+    origin: (origin, cb) => cb(null, true), // allow all origins for websocket
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+    credentials: false
   },
-  allowEIO3: true, // Support for older socket.io clients
+  transports: ["websocket", "polling"],
+  allowEIO3: true,
   pingTimeout: 60000,
   pingInterval: 25000
 });
