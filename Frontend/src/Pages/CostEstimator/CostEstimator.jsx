@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calculator, Plane, Home, GraduationCap, 
@@ -46,6 +48,49 @@ export default function CostEstimator() {
     setCosts(prev => ({ ...prev, [field]: Number(value) || 0 }));
   };
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const timestamp = new Date().toLocaleDateString();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(79, 70, 229); // Indigo-600
+    doc.text("UniYatra Financial Roadmap", 14, 22);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${timestamp}`, 14, 30);
+    doc.text(`Destination: ${selectedCountry || "Custom Plan"}`, 14, 35);
+
+    // Table
+    const tableData = categories.map(cat => [
+      cat.label,
+      `$${costs[cat.id].toLocaleString()}`
+    ]);
+    
+    tableData.push([{ content: 'Total Annual Estimate', styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }, 
+                   { content: `$${total.toLocaleString()}`, styles: { fontStyle: 'bold', fillColor: [248, 250, 252] } }]);
+
+    doc.autoTable({
+      startY: 45,
+      head: [['Expense Category', 'Estimated Cost (USD)']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 10, cellPadding: 5 },
+      margin: { top: 45 }
+    });
+
+    // Footer
+    const finalY = doc.lastAutoTable.finalY || 45;
+    doc.setFontSize(9);
+    doc.setTextColor(150);
+    doc.text("Disclaimer: Estimates are based on current market data and may vary by city and lifestyle.", 14, finalY + 15);
+    doc.text("Plan your global education journey with UniYatra.", 14, finalY + 20);
+
+    doc.save(`UniYatra_Cost_Plan_${selectedCountry || "Custom"}.pdf`);
+  };
+
   const total = Object.values(costs).reduce((a, b) => a + b, 0);
 
   const categories = [
@@ -77,10 +122,16 @@ export default function CostEstimator() {
           </div>
           
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95">
+            <button 
+              onClick={exportToPDF}
+              className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95"
+            >
               <Download size={18} /> Export PDF
             </button>
-            <button className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:border-indigo-600 hover:text-indigo-600 transition-all active:scale-95">
+            <button 
+              onClick={exportToPDF}
+              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:border-indigo-600 hover:text-indigo-600 transition-all active:scale-95"
+            >
               <Save size={18} /> Save Plan
             </button>
           </div>
