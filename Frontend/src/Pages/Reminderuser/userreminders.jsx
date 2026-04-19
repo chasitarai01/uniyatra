@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { API_BASE_URL, SOCKET_URL } from "../../config";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "";
-const API = `${BASE_URL}/api/reminders`;
+const API = `${API_BASE_URL}/api/reminders`;
 const token = () => localStorage.getItem("token");
 
 const headers = () => ({
@@ -372,7 +371,7 @@ export default function UserReminders() {
   useEffect(() => {
     const uid = getUserIdFromToken();
     if (!uid) return;
-    const s = io(BASE_URL, { transports: ["websocket", "polling"] });
+    const s = io(SOCKET_URL, { transports: ["websocket"], withCredentials: false });
     socketRef.current = s;
     s.emit("join-user-reminders", { userId: uid });
     s.on("reminder-due", (payload) => {

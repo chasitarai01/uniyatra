@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "";
-const API = `${BASE_URL}/api/support-chat`;
+import { API_BASE_URL, SOCKET_URL } from "../../config";
+
+const API = `${API_BASE_URL}/api/support-chat`;
 const token = () => localStorage.getItem("token");
 
 const headers = () => ({
@@ -81,8 +82,9 @@ export default function SupportChat() {
 
   useEffect(() => {
     if (!activeId || !token()) return;
-    const s = io(BASE_URL, {
-      transports: ["websocket", "polling"],
+    const s = io(SOCKET_URL, {
+      transports: ["websocket"],
+      withCredentials: false,
       auth: { token: token() },
     });
     socketRef.current = s;

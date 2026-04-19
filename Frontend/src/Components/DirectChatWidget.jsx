@@ -3,8 +3,9 @@ import { MessageCircle, X, Send, Search, User } from "lucide-react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "";
-const API = `${BASE_URL}/api/direct-chat`;
+import { API_BASE_URL, SOCKET_URL } from "../config";
+
+const API = `${API_BASE_URL}/api/direct-chat`;
 
 const token = () => localStorage.getItem("token");
 
@@ -88,7 +89,7 @@ export default function DirectChatWidget() {
 
   useEffect(() => {
     if (view === "chat" && activeThread && token()) {
-      const s = io(BASE_URL, { transports: ["websocket", "polling"] });
+      const s = io(SOCKET_URL, { transports: ["websocket"], withCredentials: false });
       socketRef.current = s;
 
       s.on("connect", () => {
