@@ -2,7 +2,7 @@
   "name": "uniyatra-root",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd Frontend && npm install && npm run build && cd .. && rm -rf public && cp -r Frontend/dist ./public && cd Backend && npm install",
+    "build": "cd Frontend && npm install && npm run build && cd .. && cp -rv Frontend/dist/* . && cd Backend && npm install",
     "start": "cd Backend && npm start"
   },
   "devDependencies": {
