@@ -49,20 +49,20 @@ import SmartAssistant from "./Components/SmartAssistant.jsx";
 const Layout = ({ children }) => {
   const location = useLocation();
   const hideNav = location.pathname.startsWith('/admin') || 
-                  location.pathname === '/dashboard' ||
+                  location.pathname.startsWith('/dashboard') ||
                   location.pathname === '/login' ||
                   location.pathname === '/register' ||
                   location.pathname === '/forgot-password' ||
                   location.pathname.startsWith('/reset-password') ||
-                  location.pathname === '/file' ||
-                  location.pathname === '/checklist' ||
-                  location.pathname === '/test' ||
-                  location.pathname === '/fav' ||
-                  location.pathname === '/notification' ||
-                  location.pathname === '/classes' ||
-                  location.pathname === '/reminder' ||
-                  location.pathname === '/support-chat' ||
-                  location.pathname === '/cost-estimator';
+                  location.pathname.startsWith('/file') ||
+                  location.pathname.startsWith('/checklist') ||
+                  location.pathname.startsWith('/test') ||
+                  location.pathname.startsWith('/fav') ||
+                  location.pathname.startsWith('/notification') ||
+                  location.pathname.startsWith('/classes') ||
+                  location.pathname.startsWith('/reminder') ||
+                  location.pathname.startsWith('/support-chat') ||
+                  location.pathname.startsWith('/cost-estimator');
   
   return (
     <>
@@ -98,7 +98,11 @@ function App() {
           <Route element={<UserLayout />}>
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/dashboard/universities" element={<UserUniversityList />} />
+            <Route path="/dashboard/university/:id" element={<SingleUni />} />
+            <Route path="/dashboard/university/:id/courses" element={<Courses />} />
+            <Route path="/dashboard/university/:id/scholarships" element={<ScholarshipsByUniversity />} />
             <Route path="/dashboard/scholarships" element={<UserScholarshipList />} />
+            <Route path="/dashboard/scholarship/:id" element={<SingleScholarship />} />
             <Route path="/file" element={<FileUpload />} />
             <Route path="/checklist" element={<ChecklistPage />} />
             <Route path="/test" element={<EligibilityTest />} />

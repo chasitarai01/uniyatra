@@ -129,9 +129,12 @@ const UserScholarshipList = () => {
                    <button className="flex-1 py-3.5 bg-indigo-600 text-white rounded-xl font-black text-xs hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
                       Apply Now
                    </button>
-                   <button className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center text-slate-600 transition-all">
+                   <Link 
+                     to={`/dashboard/scholarship/${s._id}`}
+                     className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center text-slate-600 transition-all"
+                   >
                       <ChevronRight size={18} />
-                   </button>
+                   </Link>
                 </div>
               </div>
             </motion.div>

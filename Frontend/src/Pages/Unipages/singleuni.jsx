@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   FaFacebook,
@@ -22,6 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export const SingleUni = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [university, setUniversity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -385,7 +386,10 @@ export const SingleUni = () => {
 
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-center gap-4 mt-8">
-        <Link to={`/courses/${university.UniversityCode}`}>
+        <Link to={location.pathname.startsWith("/dashboard") 
+          ? `/dashboard/university/${university._id}/courses` 
+          : `/courses/${university.UniversityCode}`}
+        >
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition-colors"
@@ -393,7 +397,10 @@ export const SingleUni = () => {
             View Courses
           </motion.button>
         </Link>
-        <Link to={`/uni/${university._id}/scholarships`}>
+        <Link to={location.pathname.startsWith("/dashboard") 
+          ? `/dashboard/university/${university._id}/scholarships` 
+          : `/uni/${university._id}/scholarships`}
+        >
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md"

@@ -69,53 +69,30 @@ const EligibilityTest = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         .et-wrap {
-          min-height: 100vh;
-          background: #0d0d0f;
+          min-height: calc(100vh - 80px);
+          background: #f8fafc;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 40px 20px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           position: relative;
-          overflow: hidden;
-        }
-
-        .et-wrap::before {
-          content: '';
-          position: fixed;
-          top: -30%;
-          right: -20%;
-          width: 600px;
-          height: 600px;
-          background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .et-wrap::after {
-          content: '';
-          position: fixed;
-          bottom: -20%;
-          left: -10%;
-          width: 500px;
-          height: 500px;
-          background: radial-gradient(circle, rgba(180,100,255,0.05) 0%, transparent 70%);
-          pointer-events: none;
         }
 
         .et-card {
-          background: #141416;
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 24px;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 40px;
           width: 100%;
-          max-width: 480px;
-          padding: 48px 44px;
+          max-width: 520px;
+          padding: 60px;
           position: relative;
-          box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
           animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
         }
 
@@ -125,172 +102,143 @@ const EligibilityTest = () => {
         }
 
         .et-eyebrow {
-          font-size: 10px;
-          letter-spacing: 0.2em;
+          font-size: 11px;
+          letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #d4af37;
-          margin-bottom: 10px;
-          font-weight: 500;
+          color: #6366f1;
+          margin-bottom: 12px;
+          font-weight: 800;
         }
 
         .et-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 32px;
-          font-weight: 700;
-          color: #f5f0e8;
-          line-height: 1.15;
-          margin-bottom: 6px;
+          font-size: 36px;
+          font-weight: 800;
+          color: #0f172a;
+          line-height: 1.1;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
         }
 
         .et-subtitle {
-          font-size: 13px;
-          color: rgba(255,255,255,0.35);
-          line-height: 1.5;
-          margin-bottom: 36px;
-          font-weight: 300;
+          font-size: 14px;
+          color: #64748b;
+          line-height: 1.6;
+          margin-bottom: 40px;
+          font-weight: 500;
         }
 
         .et-user-badge {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          background: rgba(212,175,55,0.08);
-          border: 1px solid rgba(212,175,55,0.2);
+          gap: 10px;
+          background: #f1f5f9;
           border-radius: 100px;
-          padding: 6px 14px 6px 8px;
-          margin-bottom: 32px;
-          animation: fadeIn 0.4s 0.3s both;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          padding: 8px 16px 8px 10px;
+          margin-bottom: 40px;
         }
 
         .et-avatar {
-          width: 24px;
-          height: 24px;
-          background: linear-gradient(135deg, #d4af37, #b8860b);
+          width: 28px;
+          height: 28px;
+          background: linear-gradient(135deg, #6366f1, #4f46e5);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
-          font-weight: 700;
-          color: #0d0d0f;
+          font-size: 11px;
+          font-weight: 800;
+          color: #ffffff;
         }
 
         .et-user-name {
-          font-size: 12px;
-          font-weight: 500;
-          color: #d4af37;
-        }
-
-        .et-user-role {
-          font-size: 11px;
-          color: rgba(212,175,55,0.5);
+          font-size: 13px;
+          font-weight: 700;
+          color: #1e293b;
         }
 
         .et-field {
-          margin-bottom: 24px;
+          margin-bottom: 32px;
         }
 
         .et-label {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
         }
 
         .et-label-text {
           font-size: 12px;
-          font-weight: 500;
-          color: rgba(255,255,255,0.5);
-          letter-spacing: 0.05em;
+          font-weight: 700;
+          color: #64748b;
           text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
 
         .et-label-value {
-          font-family: 'Playfair Display', serif;
-          font-size: 16px;
-          color: #d4af37;
-          font-weight: 700;
-        }
-
-        .et-input-wrap {
-          position: relative;
+          font-size: 18px;
+          color: #4f46e5;
+          font-weight: 800;
         }
 
         .et-input {
           width: 100%;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 12px;
-          padding: 14px 18px;
-          font-size: 22px;
-          font-family: 'Playfair Display', serif;
-          color: #f5f0e8;
+          background: #f8fafc;
+          border: 2px solid #f1f5f9;
+          border-radius: 20px;
+          padding: 16px 20px;
+          font-size: 24px;
+          font-weight: 800;
+          color: #0f172a;
           outline: none;
-          transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-          -moz-appearance: textfield;
+          transition: all 0.2s;
         }
 
-        .et-input::-webkit-outer-spin-button,
-        .et-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
         .et-input:focus {
-          border-color: rgba(212,175,55,0.4);
-          background: rgba(212,175,55,0.04);
-          box-shadow: 0 0 0 4px rgba(212,175,55,0.06);
+          border-color: #6366f1;
+          background: #ffffff;
+          box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.05);
         }
 
         .et-progress-bar {
-          height: 3px;
-          background: rgba(255,255,255,0.06);
-          border-radius: 2px;
-          margin-top: 10px;
+          height: 4px;
+          background: #f1f5f9;
+          border-radius: 10px;
+          margin-top: 12px;
           overflow: hidden;
         }
 
         .et-progress-fill {
           height: 100%;
-          border-radius: 2px;
-          background: linear-gradient(90deg, #b8860b, #d4af37, #f0d060);
-          transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+          border-radius: 10px;
+          background: linear-gradient(90deg, #6366f1, #818cf8);
+          transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .et-divider {
           height: 1px;
-          background: rgba(255,255,255,0.05);
-          margin: 32px 0;
+          background: #f1f5f9;
+          margin: 40px 0;
         }
 
         .et-btn {
           width: 100%;
-          padding: 16px;
-          background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #c49b2a 100%);
+          padding: 18px;
+          background: #0f172a;
           border: none;
-          border-radius: 12px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: #0d0d0f;
+          border-radius: 20px;
+          font-size: 15px;
+          font-weight: 700;
+          color: #ffffff;
           cursor: pointer;
-          position: relative;
-          overflow: hidden;
-          transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-          box-shadow: 0 4px 20px rgba(212,175,55,0.25);
+          transition: all 0.2s;
+          box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.1);
         }
 
         .et-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 8px 30px rgba(212,175,55,0.35);
-        }
-
-        .et-btn:active:not(:disabled) {
-          transform: translateY(0);
+          background: #1e293b;
+          transform: translateY(-2px);
+          box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
         }
 
         .et-btn:disabled {
@@ -298,156 +246,119 @@ const EligibilityTest = () => {
           cursor: not-allowed;
         }
 
-        .et-btn-loader {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-        }
-
         .et-spinner {
-          width: 14px;
-          height: 14px;
-          border: 2px solid rgba(0,0,0,0.2);
-          border-top-color: #0d0d0f;
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255,255,255,0.2);
+          border-top-color: #ffffff;
           border-radius: 50%;
-          animation: spin 0.7s linear infinite;
+          animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .et-error {
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          background: rgba(255,80,80,0.07);
-          border: 1px solid rgba(255,80,80,0.2);
-          border-radius: 10px;
-          padding: 12px 14px;
-          margin-top: 16px;
-          animation: fadeIn 0.3s both;
-        }
-
-        .et-error-icon {
-          font-size: 14px;
-          margin-top: 1px;
-          flex-shrink: 0;
-        }
-
-        .et-error-text {
-          font-size: 13px;
-          color: rgba(255,120,120,0.9);
-          line-height: 1.5;
-        }
-
         .et-result {
-          margin-top: 28px;
-          animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+          margin-top: 40px;
+          padding: 30px;
+          background: #f8fafc;
+          border-radius: 30px;
+          border: 1px solid #f1f5f9;
+          animation: slideUp 0.4s both;
         }
 
         .et-result-header {
           display: flex;
           align-items: center;
-          gap: 12px;
-          margin-bottom: 16px;
+          gap: 16px;
+          margin-bottom: 20px;
         }
 
         .et-result-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
+          width: 44px;
+          height: 44px;
+          border-radius: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 18px;
-          flex-shrink: 0;
+          font-size: 20px;
         }
 
         .et-result-icon.pass {
-          background: rgba(80,200,120,0.12);
-          border: 1px solid rgba(80,200,120,0.25);
+          background: #ecfdf5;
+          color: #059669;
         }
 
         .et-result-icon.fail {
-          background: rgba(255,100,80,0.12);
-          border: 1px solid rgba(255,100,80,0.25);
+          background: #fef2f2;
+          color: #dc2626;
         }
 
         .et-result-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 18px;
-          font-weight: 700;
-          color: #f5f0e8;
+          font-size: 20px;
+          font-weight: 800;
+          color: #0f172a;
         }
 
         .et-result-msg {
-          font-size: 13px;
-          color: rgba(255,255,255,0.45);
+          font-size: 14px;
+          color: #64748b;
           line-height: 1.6;
-          margin-top: 4px;
-          padding: 14px 16px;
-          background: rgba(255,255,255,0.03);
-          border-radius: 10px;
-          border-left: 3px solid rgba(212,175,55,0.4);
+          font-weight: 500;
         }
 
         .et-unis-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 15px;
-          color: #f5f0e8;
-          margin: 24px 0 14px;
+          font-size: 12px;
+          font-weight: 800;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          margin: 30px 0 16px;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 12px;
         }
 
         .et-unis-title::after {
           content: '';
           flex: 1;
           height: 1px;
-          background: rgba(255,255,255,0.06);
+          background: #e2e8f0;
         }
 
         .et-uni-item {
           display: flex;
           align-items: center;
-          gap: 14px;
-          padding: 14px 16px;
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(255,255,255,0.05);
-          border-radius: 12px;
-          margin-bottom: 8px;
-          transition: border-color 0.2s, background 0.2s;
-          animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+          gap: 16px;
+          padding: 16px 20px;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 18px;
+          margin-bottom: 10px;
+          transition: all 0.2s;
         }
 
-        .et-uni-item:nth-child(1) { animation-delay: 0.05s; }
-        .et-uni-item:nth-child(2) { animation-delay: 0.1s; }
-        .et-uni-item:nth-child(3) { animation-delay: 0.15s; }
-
         .et-uni-item:hover {
-          border-color: rgba(212,175,55,0.15);
-          background: rgba(212,175,55,0.03);
+          border-color: #6366f1;
+          transform: translateX(4px);
         }
 
         .et-uni-num {
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          background: rgba(212,175,55,0.1);
-          border: 1px solid rgba(212,175,55,0.2);
+          width: 32px;
+          height: 32px;
+          border-radius: 10px;
+          background: #f1f5f9;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 11px;
-          font-weight: 700;
-          color: #d4af37;
-          flex-shrink: 0;
+          font-size: 12px;
+          font-weight: 800;
+          color: #64748b;
         }
 
         .et-uni-name {
           font-size: 14px;
-          color: rgba(255,255,255,0.75);
-          font-weight: 400;
+          color: #1e293b;
+          font-weight: 700;
         }
       `}</style>
 
@@ -469,7 +380,7 @@ const EligibilityTest = () => {
             <div className="et-field">
               <div className="et-label">
                 <span className="et-label-text">IELTS Score</span>
-                <span className="et-label-value">{ieltsScore || "—"} <span style={{fontSize:'11px',color:'rgba(212,175,55,0.5)',fontFamily:'DM Sans'}}>/ 9.0</span></span>
+                <span className="et-label-value">{ieltsScore || "—"} <span style={{fontSize:'11px',color:'#94a3b8',fontFamily:'Plus Jakarta Sans'}}>/ 9.0</span></span>
               </div>
               <div className="et-input-wrap">
                 <input
@@ -494,7 +405,7 @@ const EligibilityTest = () => {
             <div className="et-field">
               <div className="et-label">
                 <span className="et-label-text">Grade Score</span>
-                <span className="et-label-value">{gradeScore || "—"} <span style={{fontSize:'11px',color:'rgba(212,175,55,0.5)',fontFamily:'DM Sans'}}>%</span></span>
+                <span className="et-label-value">{gradeScore || "—"} <span style={{fontSize:'11px',color:'#94a3b8',fontFamily:'Plus Jakarta Sans'}}>%</span></span>
               </div>
               <div className="et-input-wrap">
                 <input

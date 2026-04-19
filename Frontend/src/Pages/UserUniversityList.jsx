@@ -140,7 +140,7 @@ const UserUniversityList = () => {
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Growth Track</span>
                   </div>
                   <Link 
-                    to={`/uni/${uni._id}`}
+                    to={`/dashboard/university/${uni._id}`}
                     className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-indigo-600 transition-all shadow-lg shadow-black/5"
                   >
                     View Portal <ChevronRight size={14} />

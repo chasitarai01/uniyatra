@@ -14,8 +14,17 @@ const SmartAssistant = () => {
   ]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [userRole, setUserRole] = useState("user");
   const scrollRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserRole(user.role || "user");
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -53,10 +62,23 @@ const SmartAssistant = () => {
     }, 1000);
   };
 
+  const isAdmin = userRole === "admin";
   const quickActions = [
-    { label: "View Universities", icon: GraduationCap, path: "/dashboard/universities" },
-    { label: "Find Scholarships", icon: Award, path: "/dashboard/scholarships" },
-    { label: "Contact Support", icon: HelpCircle, path: "/support-chat" }
+    { 
+      label: "View Universities", 
+      icon: GraduationCap, 
+      path: isAdmin ? "/admin/universities" : "/dashboard/universities" 
+    },
+    { 
+      label: "Find Scholarships", 
+      icon: Award, 
+      path: isAdmin ? "/admin/scholarships" : "/dashboard/scholarships" 
+    },
+    { 
+      label: "Contact Support", 
+      icon: HelpCircle, 
+      path: "/support-chat" 
+    }
   ];
 
   return (

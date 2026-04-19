@@ -7,30 +7,32 @@ import {
   Calendar, CheckCircle2
 } from 'lucide-react';
 
-const Widget = ({ title, value, icon: Icon, color, delay }) => (
+const Widget = ({ title, value, icon: Icon, color, delay, path }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
-    className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 group hover:shadow-xl transition-all duration-300"
+    className="bg-white rounded-[2rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all duration-300"
   >
-    <div className="flex items-center justify-between mb-4">
-      <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
-        <Icon size={22} />
+    <Link to={path} className="p-6 block h-full">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+          <Icon size={22} />
+        </div>
+        <div className="flex -space-x-2">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-slate-100" />
+          ))}
+        </div>
       </div>
-      <div className="flex -space-x-2">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-slate-100" />
-        ))}
+      <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">{title}</h3>
+      <div className="flex items-baseline gap-2">
+        <p className="text-3xl font-black text-slate-800 tracking-tight">{value}</p>
+        <span className="text-emerald-500 text-xs font-bold flex items-center gap-0.5">
+          <TrendingUp size={10} /> +5%
+        </span>
       </div>
-    </div>
-    <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">{title}</h3>
-    <div className="flex items-baseline gap-2">
-      <p className="text-3xl font-black text-slate-800 tracking-tight">{value}</p>
-      <span className="text-emerald-500 text-xs font-bold flex items-center gap-0.5">
-        <TrendingUp size={10} /> +5%
-      </span>
-    </div>
+    </Link>
   </motion.div>
 );
 
@@ -71,10 +73,10 @@ export default function UserDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Widget title="Applied Unis" value="04" icon={GraduationCap} color="bg-indigo-600" delay={0.1} />
-        <Widget title="Scholarships" value="12" icon={Award} color="bg-purple-600" delay={0.2} />
-        <Widget title="Active Classes" value="02" icon={Video} color="bg-rose-500" delay={0.3} />
-        <Widget title="Documents" value="08" icon={FileText} color="bg-blue-500" delay={0.4} />
+        <Widget title="Applied Unis" value="04" icon={GraduationCap} color="bg-indigo-600" delay={0.1} path="/dashboard/universities" />
+        <Widget title="Scholarships" value="12" icon={Award} color="bg-purple-600" delay={0.2} path="/dashboard/scholarships" />
+        <Widget title="Active Classes" value="02" icon={Video} color="bg-rose-500" delay={0.3} path="/classes" />
+        <Widget title="Documents" value="08" icon={FileText} color="bg-blue-500" delay={0.4} path="/file" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -108,19 +110,21 @@ export default function UserDashboard() {
           {/* Quick Shortcuts */}
           <section>
             <h2 className="text-xl font-black text-slate-800 tracking-tight mb-6 px-2">Quick Access</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {[
-                { label: "Cost Estimator", path: "/cost-estimator", color: "hover:bg-emerald-50 text-emerald-600" },
+                { label: "Universities", path: "/dashboard/universities", color: "hover:bg-indigo-50 text-indigo-600" },
+                { label: "Scholarships", path: "/dashboard/scholarships", color: "hover:bg-purple-50 text-purple-600" },
+                { label: "Estimator", path: "/cost-estimator", color: "hover:bg-emerald-50 text-emerald-600" },
                 { label: "Checklist", path: "/checklist", color: "hover:bg-orange-50 text-orange-600" },
                 { label: "Favorites", path: "/fav", color: "hover:bg-pink-50 text-pink-600" },
-                { label: "Applications", path: "/file", color: "hover:bg-blue-50 text-blue-600" },
+                { label: "Documents", path: "/file", color: "hover:bg-blue-50 text-blue-600" },
               ].map((item) => (
                 <Link 
                   key={item.label}
                   to={item.path}
-                  className={`bg-white border border-slate-100 p-6 rounded-[2rem] text-center transition-all hover:border-transparent hover:shadow-xl ${item.color}`}
+                  className={`bg-white border border-slate-100 p-4 rounded-2xl text-center transition-all hover:border-transparent hover:shadow-xl ${item.color}`}
                 >
-                  <span className="text-xs font-black uppercase tracking-widest">{item.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
                 </Link>
               ))}
             </div>
