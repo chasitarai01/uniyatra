@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShieldCheck, GraduationCap, Award, CheckCircle2, XCircle, Loader2, Sparkles, ChevronRight, User } from "lucide-react";
 
 const EligibilityTest = () => {
   const [ieltsScore, setIeltsScore] = useState("");
@@ -9,19 +11,10 @@ const EligibilityTest = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
-  const [focused, setFocused] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const payload = token.split(".")[1];
-        const decoded = JSON.parse(atob(payload));
-        setUser(decoded);
-      } catch (err) {
-        console.error("Invalid token", err);
-      }
-    }
+    const userData = localStorage.getItem("user");
+    if (userData) setUser(JSON.parse(userData));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -32,7 +25,7 @@ const EligibilityTest = () => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      setError("You are not logged in. Please login first.");
+      setError("Session expired. Please login again.");
       return;
     }
 
@@ -53,11 +46,7 @@ const EligibilityTest = () => {
         : [];
       setUniversities(uniArray.slice(0, 3));
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Unauthorized! Please login again.");
-      } else {
-        setError("Failed to check eligibility or fetch universities.");
-      }
+      setError(err.response?.data?.message || "Assessment failed. Please check your network.");
     } finally {
       setLoading(false);
     }
@@ -67,427 +56,253 @@ const EligibilityTest = () => {
   const gradePercent = gradeScore ? Number(gradeScore) : 0;
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-indigo-600 font-black text-[10px] uppercase tracking-widest">
+            <Sparkles className="w-3 h-3 animate-pulse" />
+            Smart Assessment Engine
+          </div>
+          <h1 className="text-4xl font-black text-slate-800 tracking-tight">Academic <span className="text-indigo-600">Eligibility</span></h1>
+          <p className="text-slate-500 font-medium max-w-lg">Our AI-driven engine analyzes your academic credentials to match you with global institutions and scholarship opportunities.</p>
+        </div>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        .et-wrap {
-          min-height: calc(100vh - 80px);
-          background: #f8fafc;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 40px 20px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          position: relative;
-        }
-
-        .et-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 40px;
-          width: 100%;
-          max-width: 520px;
-          padding: 60px;
-          position: relative;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
-          animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .et-eyebrow {
-          font-size: 11px;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: #6366f1;
-          margin-bottom: 12px;
-          font-weight: 800;
-        }
-
-        .et-title {
-          font-size: 36px;
-          font-weight: 800;
-          color: #0f172a;
-          line-height: 1.1;
-          margin-bottom: 12px;
-          letter-spacing: -0.02em;
-        }
-
-        .et-subtitle {
-          font-size: 14px;
-          color: #64748b;
-          line-height: 1.6;
-          margin-bottom: 40px;
-          font-weight: 500;
-        }
-
-        .et-user-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: #f1f5f9;
-          border-radius: 100px;
-          padding: 8px 16px 8px 10px;
-          margin-bottom: 40px;
-        }
-
-        .et-avatar {
-          width: 28px;
-          height: 28px;
-          background: linear-gradient(135deg, #6366f1, #4f46e5);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 11px;
-          font-weight: 800;
-          color: #ffffff;
-        }
-
-        .et-user-name {
-          font-size: 13px;
-          font-weight: 700;
-          color: #1e293b;
-        }
-
-        .et-field {
-          margin-bottom: 32px;
-        }
-
-        .et-label {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-
-        .et-label-text {
-          font-size: 12px;
-          font-weight: 700;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .et-label-value {
-          font-size: 18px;
-          color: #4f46e5;
-          font-weight: 800;
-        }
-
-        .et-input {
-          width: 100%;
-          background: #f8fafc;
-          border: 2px solid #f1f5f9;
-          border-radius: 20px;
-          padding: 16px 20px;
-          font-size: 24px;
-          font-weight: 800;
-          color: #0f172a;
-          outline: none;
-          transition: all 0.2s;
-        }
-
-        .et-input:focus {
-          border-color: #6366f1;
-          background: #ffffff;
-          box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.05);
-        }
-
-        .et-progress-bar {
-          height: 4px;
-          background: #f1f5f9;
-          border-radius: 10px;
-          margin-top: 12px;
-          overflow: hidden;
-        }
-
-        .et-progress-fill {
-          height: 100%;
-          border-radius: 10px;
-          background: linear-gradient(90deg, #6366f1, #818cf8);
-          transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .et-divider {
-          height: 1px;
-          background: #f1f5f9;
-          margin: 40px 0;
-        }
-
-        .et-btn {
-          width: 100%;
-          padding: 18px;
-          background: #0f172a;
-          border: none;
-          border-radius: 20px;
-          font-size: 15px;
-          font-weight: 700;
-          color: #ffffff;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.1);
-        }
-
-        .et-btn:hover:not(:disabled) {
-          background: #1e293b;
-          transform: translateY(-2px);
-          box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
-        }
-
-        .et-btn:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .et-spinner {
-          width: 16px;
-          height: 16px;
-          border: 2px solid rgba(255,255,255,0.2);
-          border-top-color: #ffffff;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .et-result {
-          margin-top: 40px;
-          padding: 30px;
-          background: #f8fafc;
-          border-radius: 30px;
-          border: 1px solid #f1f5f9;
-          animation: slideUp 0.4s both;
-        }
-
-        .et-result-header {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 20px;
-        }
-
-        .et-result-icon {
-          width: 44px;
-          height: 44px;
-          border-radius: 14px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 20px;
-        }
-
-        .et-result-icon.pass {
-          background: #ecfdf5;
-          color: #059669;
-        }
-
-        .et-result-icon.fail {
-          background: #fef2f2;
-          color: #dc2626;
-        }
-
-        .et-result-title {
-          font-size: 20px;
-          font-weight: 800;
-          color: #0f172a;
-        }
-
-        .et-result-msg {
-          font-size: 14px;
-          color: #64748b;
-          line-height: 1.6;
-          font-weight: 500;
-        }
-
-        .et-unis-title {
-          font-size: 12px;
-          font-weight: 800;
-          color: #94a3b8;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin: 30px 0 16px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .et-unis-title::after {
-          content: '';
-          flex: 1;
-          height: 1px;
-          background: #e2e8f0;
-        }
-
-        .et-uni-item {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 16px 20px;
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 18px;
-          margin-bottom: 10px;
-          transition: all 0.2s;
-        }
-
-        .et-uni-item:hover {
-          border-color: #6366f1;
-          transform: translateX(4px);
-        }
-
-        .et-uni-num {
-          width: 32px;
-          height: 32px;
-          border-radius: 10px;
-          background: #f1f5f9;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          font-weight: 800;
-          color: #64748b;
-        }
-
-        .et-uni-name {
-          font-size: 14px;
-          color: #1e293b;
-          font-weight: 700;
-        }
-      `}</style>
-
-      <div className="et-wrap">
-        <div className="et-card">
-          <div className="et-eyebrow">Academic Assessment</div>
-          <h1 className="et-title">Eligibility<br />Check</h1>
-          <p className="et-subtitle">Enter your academic scores to discover your qualification status and matched universities.</p>
-
-          {user && (
-            <div className="et-user-badge">
-              <div className="et-avatar">{user.name?.charAt(0).toUpperCase()}</div>
-              <span className="et-user-name">{user.name}</span>
-              <span className="et-user-role">· {user.role}</span>
+        {user && (
+          <div className="flex items-center gap-4 bg-white p-3 pr-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-black">
+              {user.name?.charAt(0) || <User size={18} />}
             </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="et-field">
-              <div className="et-label">
-                <span className="et-label-text">IELTS Score</span>
-                <span className="et-label-value">{ieltsScore || "—"} <span style={{fontSize:'11px',color:'#94a3b8',fontFamily:'Plus Jakarta Sans'}}>/ 9.0</span></span>
-              </div>
-              <div className="et-input-wrap">
-                <input
-                  className="et-input"
-                  type="number"
-                  step="0.1"
-                  value={ieltsScore}
-                  onChange={(e) => setIeltsScore(e.target.value)}
-                  onFocus={() => setFocused('ielts')}
-                  onBlur={() => setFocused(null)}
-                  required
-                  min="0"
-                  max="9"
-                  placeholder="0.0"
-                />
-              </div>
-              <div className="et-progress-bar">
-                <div className="et-progress-fill" style={{ width: `${ieltsPercent}%` }} />
-              </div>
+            <div>
+              <p className="text-xs font-black text-slate-800">{user.name}</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user.role}</p>
             </div>
+          </div>
+        )}
+      </div>
 
-            <div className="et-field">
-              <div className="et-label">
-                <span className="et-label-text">Grade Score</span>
-                <span className="et-label-value">{gradeScore || "—"} <span style={{fontSize:'11px',color:'#94a3b8',fontFamily:'Plus Jakarta Sans'}}>%</span></span>
-              </div>
-              <div className="et-input-wrap">
-                <input
-                  className="et-input"
-                  type="number"
-                  value={gradeScore}
-                  onChange={(e) => setGradeScore(e.target.value)}
-                  onFocus={() => setFocused('grade')}
-                  onBlur={() => setFocused(null)}
-                  required
-                  min="0"
-                  max="100"
-                  placeholder="0"
-                />
-              </div>
-              <div className="et-progress-bar">
-                <div className="et-progress-fill" style={{ width: `${gradePercent}%` }} />
-              </div>
-            </div>
-
-            <div className="et-divider" />
-
-            <button className="et-btn" type="submit" disabled={loading}>
-              {loading ? (
-                <span className="et-btn-loader">
-                  <span className="et-spinner" />
-                  Analysing...
-                </span>
-              ) : "Check Eligibility"}
-            </button>
-          </form>
-
-          {error && (
-            <div className="et-error">
-              <span className="et-error-icon">⚠</span>
-              <span className="et-error-text">{error}</span>
-            </div>
-          )}
-
-          {eligibility && (() => {
-            // Robustly determine eligibility from any API response shape
-            const msg = (eligibility.message || "").toLowerCase();
-            const isEligible =
-              eligibility.eligible === true ||
-              eligibility.isEligible === true ||
-              eligibility.status === "eligible" ||
-              eligibility.status === "success" ||
-              (!eligibility.hasOwnProperty('eligible') &&
-               !eligibility.hasOwnProperty('isEligible') &&
-               (msg.includes("congratulations") || msg.includes("eligible") || msg.includes("met")));
-
-            return (
-            <div className="et-result">
-              <div className="et-result-header">
-                <div className={`et-result-icon ${isEligible ? 'pass' : 'fail'}`}>
-                  {isEligible ? '✓' : '✕'}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* Left: Input Card */}
+        <div className="lg:col-span-5">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm sticky top-10"
+          >
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-6">
+                {/* IELTS Input */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">IELTS Proficiency</label>
+                    <span className="text-lg font-black text-indigo-600">{ieltsScore || "0.0"} <span className="text-[10px] text-slate-300">/ 9.0</span></span>
+                  </div>
+                  <div className="relative group">
+                    <GraduationCap className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={20} />
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="9"
+                      value={ieltsScore}
+                      onChange={(e) => setIeltsScore(e.target.value)}
+                      placeholder="Enter Score"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-black text-slate-800 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${ieltsPercent}%` }}
+                      className="h-full bg-indigo-600 rounded-full"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <div className="et-result-title">
-                    {isEligible ? 'Eligible' : 'Not Eligible'}
+
+                {/* Grade Input */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aggregate Grade (%)</label>
+                    <span className="text-lg font-black text-indigo-600">{gradeScore || "0"} <span className="text-[10px] text-slate-300">%</span></span>
+                  </div>
+                  <div className="relative group">
+                    <ShieldCheck className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={20} />
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={gradeScore}
+                      onChange={(e) => setGradeScore(e.target.value)}
+                      placeholder="Enter Percentage"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-black text-slate-800 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${gradePercent}%` }}
+                      className="h-full bg-indigo-600 rounded-full"
+                    />
                   </div>
                 </div>
               </div>
-              <div className="et-result-msg">{eligibility.message}</div>
 
-              {universities.length > 0 && (
-                <>
-                  <div className="et-unis-title">Recommended</div>
-                  {universities.map((uni, i) => (
-                    <div className="et-uni-item" key={i}>
-                      <div className="et-uni-num">{String(i + 1).padStart(2, '0')}</div>
-                      <span className="et-uni-name">{uni.name || uni.UniversityName}</span>
+              <div className="pt-6 border-t border-slate-50">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-5 bg-slate-900 text-white rounded-[1.5rem] font-black tracking-tight text-sm hover:bg-indigo-600 shadow-xl shadow-slate-900/10 hover:shadow-indigo-600/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin" size={18} />
+                      Analyzing Credentials...
+                    </>
+                  ) : (
+                    <>
+                      Run Smart Assessment
+                      <ChevronRight size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+            
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-4 bg-rose-50 text-rose-600 rounded-2xl border border-rose-100 text-xs font-bold flex gap-3"
+              >
+                <XCircle size={16} className="shrink-0" />
+                {error}
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Right: Results Section */}
+        <div className="lg:col-span-7">
+          <AnimatePresence mode="wait">
+            {!eligibility && !loading ? (
+              <motion.div 
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full flex flex-col items-center justify-center text-center p-20 border-2 border-dashed border-slate-200 rounded-[3rem] bg-white/50"
+              >
+                <div className="w-24 h-24 bg-white rounded-3xl shadow-sm border border-slate-100 flex items-center justify-center text-slate-300 mb-8">
+                  <ShieldCheck size={48} />
+                </div>
+                <h3 className="text-2xl font-black text-slate-800 mb-4">Ready for Analysis</h3>
+                <p className="text-slate-500 font-medium max-w-sm">
+                  Complete the form to generate your academic compatibility report and recommended institutions.
+                </p>
+              </motion.div>
+            ) : loading ? (
+              <motion.div 
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="h-full flex flex-col items-center justify-center text-center p-20"
+              >
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin"></div>
+                  <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 animate-pulse" size={32} />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mt-8">Calculating Potential...</h3>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Checking 500+ Global Partners</p>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="results"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="space-y-8"
+              >
+                {/* Status Card */}
+                {(() => {
+                  const msg = (eligibility.message || "").toLowerCase();
+                  const isEligible = eligibility.eligible === true || eligibility.status === "eligible" || msg.includes("congratulations");
+                  
+                  return (
+                    <div className={`p-10 rounded-[3rem] border shadow-2xl shadow-indigo-500/5 ${isEligible ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
+                      <div className="flex items-start gap-8">
+                        <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center shadow-lg ${isEligible ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
+                          {isEligible ? <CheckCircle2 size={40} /> : <XCircle size={40} />}
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <h2 className={`text-4xl font-black tracking-tight ${isEligible ? 'text-emerald-900' : 'text-rose-900'}`}>
+                            {isEligible ? 'Verified Eligible' : 'Ineligible Status'}
+                          </h2>
+                          <p className={`text-lg font-medium leading-relaxed ${isEligible ? 'text-emerald-700/80' : 'text-rose-700/80'}`}>
+                            {eligibility.message}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </>
-              )}
-            </div>
-            );
-          })()}
+                  );
+                })()}
+
+                {/* Recommendations */}
+                {universities.length > 0 && (
+                  <div className="bg-white rounded-[3rem] border border-slate-200 p-10 space-y-8 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+                      <div className="flex items-center gap-3">
+                        <GraduationCap className="text-indigo-600" size={24} />
+                        <h3 className="text-xl font-black text-slate-800">Top Matches</h3>
+                      </div>
+                      <span className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest">
+                        Based on Scores
+                      </span>
+                    </div>
+
+                    <div className="grid gap-4">
+                      {universities.map((uni, i) => (
+                        <motion.div 
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                          className="group p-6 bg-slate-50 hover:bg-white border border-transparent hover:border-indigo-100 rounded-3xl transition-all flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-6">
+                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center font-black text-slate-300 border border-slate-100 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all shadow-sm">
+                              0{i + 1}
+                            </div>
+                            <div>
+                              <p className="font-black text-slate-800 group-hover:text-indigo-600 transition-colors">{uni.name || uni.UniversityName}</p>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mt-1">
+                                <Award size={10} /> {uni.type || "Premier Institution"}
+                              </p>
+                            </div>
+                          </div>
+                          <button className="p-3 bg-white text-slate-400 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                            <ChevronRight size={18} />
+                          </button>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4 text-center">
+                      <p className="text-xs font-bold text-slate-400 flex items-center justify-center gap-2">
+                        <Sparkles size={14} className="text-amber-400" />
+                        Explore 50+ more matches in the <span className="text-indigo-600 underline cursor-pointer">University Directory</span>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

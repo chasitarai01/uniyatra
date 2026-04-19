@@ -1,9 +1,7 @@
-// pages/user/UserRooms.jsx
-// Route: /classes
-// Students browse available live rooms and join them
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Video, Search, User, ArrowRight, Play } from "lucide-react";
 
 const getUser = () => {
   try { return JSON.parse(atob(localStorage.getItem("token").split(".")[1])); }
@@ -14,110 +12,6 @@ const fmt = (d) => d
   ? new Date(d).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
   : null;
 
-const css = `
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap');
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-.ur-root {
-  min-height: 100vh; background: #fff;
-  font-family: 'DM Mono', monospace; color: #2e2a24;
-  padding-bottom: 80px;
-}
-
-.ur-topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 40px; border-bottom: 1px solid #e8e2d9;
-  position: sticky; top: 0; background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(8px); z-index: 10;
-}
-.ur-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: #2e2a24; }
-.ur-logo em { font-style: italic; color: #998a6d; }
-.ur-user-tag { font-size: 10px; color: #a99d84; letter-spacing: 0.08em; }
-
-.ur-hero { padding: 52px 40px 28px; }
-.ur-eyebrow { font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: #998a6d; margin-bottom: 12px; }
-.ur-title { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #2e2a24; line-height: 1; margin-bottom: 8px; }
-.ur-title em { font-style: italic; color: #7a6e5a; }
-.ur-sub { font-size: 11px; color: #a99d84; letter-spacing: 0.06em; }
-.ur-divider { width: 40px; height: 1px; background: #998a6d; opacity: 0.5; margin: 24px 40px 36px; }
-
-/* search */
-.ur-search-row { padding: 0 40px 32px; display: flex; align-items: center; gap: 12px; }
-.ur-search {
-  flex: 1; max-width: 360px; background: transparent; border: none; border-bottom: 1px solid #d9d0c0;
-  padding: 8px 2px; font-family: 'DM Mono', monospace; font-size: 13px; color: #2e2a24; outline: none;
-  transition: border-color 0.2s;
-}
-.ur-search:focus { border-bottom-color: #998a6d; }
-.ur-search::placeholder { color: #c4b89a; }
-.ur-count { font-size: 10px; color: #c4b89a; letter-spacing: 0.08em; }
-
-/* grid */
-.ur-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1px; margin: 0 40px; background: #e8e2d9;
-}
-
-.ur-card { background: #fff; padding: 28px; transition: background 0.15s; cursor: default; }
-.ur-card:hover { background: #faf8f5; }
-
-.ur-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.ur-badge { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
-.ur-badge.live { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-.ur-badge.sched { background: #fff8e1; color: #f57f17; border: 1px solid #ffecb3; }
-.ur-code { font-size: 10px; letter-spacing: 0.2em; color: #998a6d; font-weight: 400; }
-
-.ur-card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: #2e2a24; margin-bottom: 12px; line-height: 1.2; }
-.ur-card-meta  { font-size: 10px; color: #a99d84; letter-spacing: 0.05em; line-height: 2.2; }
-.ur-card-meta b { color: #7a6e5a; font-weight: 400; }
-
-/* capacity bar */
-.ur-cap { margin-top: 14px; }
-.ur-cap-row { display: flex; justify-content: space-between; font-size: 9px; color: #c4b89a; margin-bottom: 5px; letter-spacing: 0.06em; }
-.ur-cap-track { height: 2px; background: #e8e2d9; }
-.ur-cap-fill  { height: 2px; background: #998a6d; transition: width 0.4s; }
-
-.ur-divider-sm { height: 1px; background: #f0ece6; margin: 16px 0; }
-
-.ur-join-btn {
-  width: 100%; padding: 12px; background: #2e2a24; color: #fff; border: none;
-  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
-  text-transform: uppercase; cursor: pointer; transition: background 0.18s;
-}
-.ur-join-btn:hover    { background: #998a6d; }
-.ur-join-btn.full     { background: #f5f0ea; color: #c4b89a; cursor: not-allowed; }
-.ur-join-btn.full:hover { background: #f5f0ea; }
-
-/* empty */
-.ur-empty {
-  margin: 0 40px; background: #faf8f5; border: 1px dashed #d9d0c0;
-  display: flex; flex-direction: column; align-items: center; padding: 80px; text-align: center;
-}
-.ur-empty-icon { font-size: 32px; opacity: 0.25; margin-bottom: 14px; }
-.ur-empty-txt  { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #c4b89a; }
-
-.ur-loading { display: flex; align-items: center; justify-content: center; height: 180px; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #c4b89a; }
-
-/* join by code */
-.ur-code-section { margin: 40px 40px 0; padding: 28px; background: #faf8f5; border: 1px solid #e8e2d9; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.ur-code-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #998a6d; flex-shrink: 0; }
-.ur-code-input {
-  background: transparent; border: none; border-bottom: 1px solid #d9d0c0;
-  padding: 8px 2px; font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: 0.1em;
-  color: #2e2a24; outline: none; width: 160px; text-transform: uppercase;
-  transition: border-color 0.2s;
-}
-.ur-code-input:focus { border-bottom-color: #998a6d; }
-.ur-code-input::placeholder { color: #d9d0c0; letter-spacing: 0.08em; font-size: 12px; }
-.ur-code-btn {
-  padding: 10px 22px; background: #2e2a24; color: #fff; border: none;
-  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
-  text-transform: uppercase; cursor: pointer; transition: background 0.18s;
-}
-.ur-code-btn:hover { background: #998a6d; }
-.ur-code-err { font-size: 10px; color: #c62828; letter-spacing: 0.05em; }
-`;
-
 export default function UserRooms() {
   const [rooms, setRooms]       = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -125,7 +19,6 @@ export default function UserRooms() {
   const [codeInput, setCodeInput] = useState("");
   const [codeErr, setCodeErr]   = useState("");
   const navigate = useNavigate();
-  const user     = getUser();
   const token    = localStorage.getItem("token");
 
   useEffect(() => {
@@ -134,13 +27,12 @@ export default function UserRooms() {
       try {
         const res  = await fetch("http://localhost:5001/api/rooms", { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
-        // Only show active rooms to users
         setRooms((data.rooms || []).filter(r => r.isActive));
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
     };
     load();
-  }, []);
+  }, [token]);
 
   const joinByCode = async () => {
     const code = codeInput.trim().toUpperCase();
@@ -160,108 +52,164 @@ export default function UserRooms() {
   );
 
   return (
-    <>
-      <style>{css}</style>
-      <div className="ur-root">
-
-        {/* Topbar */}
-        <div className="ur-topbar">
-          <div className="ur-logo">Uni<em>Yatra</em></div>
-          <span className="ur-user-tag">
-            {user?.username || user?.email || "Student"}
-          </span>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      
+      {/* Hero Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-indigo-600 font-black text-[10px] uppercase tracking-widest">
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></div>
+            Virtual Classrooms
+          </div>
+          <h1 className="text-4xl font-black text-slate-800 tracking-tight">Interactive <span className="text-indigo-600">Learning</span></h1>
+          <p className="text-slate-500 font-medium max-w-lg">Access live sessions hosted by top educators. Enter a room code to join your scheduled class.</p>
         </div>
 
-        {/* Hero */}
-        <div className="ur-hero">
-          <p className="ur-eyebrow">Live Classes</p>
-          <h1 className="ur-title">Join a <em>Class</em></h1>
-          <p className="ur-sub">Browse live sessions or enter a room code from your instructor</p>
+        {/* Join by code widget */}
+        <div className="bg-white p-2 rounded-[2rem] border border-slate-200 shadow-sm flex items-center gap-2 w-full md:w-auto">
+          <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100 flex-1 md:flex-none">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Code</span>
+            <input
+              className="bg-transparent border-none outline-none font-black text-slate-800 w-24 uppercase tracking-widest"
+              placeholder="JOIN..."
+              value={codeInput}
+              maxLength={6}
+              onChange={e => { setCodeInput(e.target.value.toUpperCase()); setCodeErr(""); }}
+              onKeyDown={e => e.key === "Enter" && joinByCode()}
+            />
+          </div>
+          <button 
+            onClick={joinByCode}
+            className="p-3 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20"
+          >
+            <ArrowRight size={20} />
+          </button>
         </div>
+      </div>
 
-        <div className="ur-divider" />
+      {codeErr && <p className="text-rose-500 text-xs font-bold text-right -mt-8 mr-2">{codeErr}</p>}
 
-        {/* Join by code */}
-        <div className="ur-code-section">
-          <span className="ur-code-label">Have a room code?</span>
+      {/* Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-slate-100">
+        <div className="relative flex-1 group w-full">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
           <input
-            className="ur-code-input"
-            placeholder="Enter code…"
-            value={codeInput}
-            maxLength={6}
-            onChange={e => { setCodeInput(e.target.value.toUpperCase()); setCodeErr(""); }}
-            onKeyDown={e => e.key === "Enter" && joinByCode()}
-          />
-          <button className="ur-code-btn" onClick={joinByCode}>Join →</button>
-          {codeErr && <span className="ur-code-err">{codeErr}</span>}
-        </div>
-
-        {/* Search */}
-        <div className="ur-search-row" style={{ marginTop: 32 }}>
-          <input
-            className="ur-search"
-            placeholder="Search classes…"
+            className="w-full bg-white border border-slate-200 rounded-[1.5rem] py-4 pl-14 pr-6 font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all"
+            placeholder="Search for subjects or instructors..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <span className="ur-count">{filtered.length} live</span>
         </div>
+        <div className="px-6 py-4 bg-slate-900 rounded-[1.5rem] text-white flex items-center gap-3 whitespace-nowrap">
+          <span className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-sm font-black tracking-tight">{filtered.length} Live Now</span>
+        </div>
+      </div>
 
-        {/* Grid */}
-        {loading ? (
-          <div className="ur-loading">Loading classes…</div>
-        ) : filtered.length === 0 ? (
-          <div className="ur-empty">
-            <div className="ur-empty-icon">○</div>
-            <p className="ur-empty-txt">
-              {search ? "No classes match your search" : "No live classes right now"}
-            </p>
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1,2,3].map(i => (
+            <div key={i} className="h-80 bg-slate-100 animate-pulse rounded-[2.5rem]"></div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white border border-dashed border-slate-200 rounded-[3rem] text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-300 mb-6">
+            <Video size={40} />
           </div>
-        ) : (
-          <div className="ur-grid">
+          <h3 className="text-xl font-black text-slate-800">Quiet for now...</h3>
+          <p className="text-slate-500 font-medium max-w-xs mt-2">
+            {search ? "No classes match your search criteria." : "There are no live classes at the moment. Check back later!"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode="popLayout">
             {filtered.map(room => {
               const pct  = Math.round(((room.participants?.length || 0) / room.maxParticipants) * 100);
               const full = (room.participants?.length || 0) >= room.maxParticipants;
+              
               return (
-                <div key={room._id} className="ur-card">
-                  <div className="ur-card-top">
-                    <span className="ur-badge live">● Live</span>
-                    <span className="ur-code">{room.roomCode}</span>
-                  </div>
-
-                  <p className="ur-card-title">{room.title}</p>
-
-                  <div className="ur-card-meta">
-                    <div><b>Host &nbsp;</b>{room.createdBy?.username || "Instructor"}</div>
-                    {room.scheduledAt && <div><b>Scheduled &nbsp;</b>{fmt(room.scheduledAt)}</div>}
-                  </div>
-
-                  {/* Capacity */}
-                  <div className="ur-cap">
-                    <div className="ur-cap-row">
-                      <span>{room.participants?.length || 0} joined</span>
-                      <span>{room.maxParticipants} max</span>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  key={room._id}
+                  className="group bg-white rounded-[2.5rem] border border-slate-200 p-8 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all relative overflow-hidden flex flex-col"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+                  
+                  <div className="flex items-start justify-between mb-8 relative z-10">
+                    <div className="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-2 border border-emerald-100">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Active Class</span>
                     </div>
-                    <div className="ur-cap-track">
-                      <div className="ur-cap-fill" style={{ width: `${pct}%` }} />
-                    </div>
+                    <span className="text-xs font-black text-slate-300 group-hover:text-indigo-400 transition-colors uppercase tracking-widest">{room.roomCode}</span>
                   </div>
 
-                  <div className="ur-divider-sm" />
+                  <h3 className="text-2xl font-black text-slate-800 leading-tight mb-4 group-hover:text-indigo-600 transition-colors">{room.title}</h3>
+                  
+                  <div className="space-y-4 mb-8 flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                        <User size={14} />
+                      </div>
+                      <div className="text-xs">
+                        <p className="text-slate-400 font-bold uppercase tracking-tighter">Instructor</p>
+                        <p className="text-slate-800 font-black">{room.createdBy?.username || "Global Educator"}</p>
+                      </div>
+                    </div>
+                    {room.scheduledAt && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                          <Play size={14} />
+                        </div>
+                        <div className="text-xs">
+                          <p className="text-slate-400 font-bold uppercase tracking-tighter">Started At</p>
+                          <p className="text-slate-800 font-black">{fmt(room.scheduledAt)}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Capacity Indicator */}
+                  <div className="space-y-2 mb-8">
+                    <div className="flex justify-between items-end">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attendance</span>
+                      <span className="text-xs font-black text-slate-800">{room.participants?.length || 0} / {room.maxParticipants}</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pct}%` }}
+                        className={`h-full rounded-full ${full ? 'bg-rose-500' : 'bg-indigo-600'}`}
+                      />
+                    </div>
+                  </div>
 
                   <button
-                    className={`ur-join-btn ${full ? "full" : ""}`}
-                    onClick={() => !full && navigate(`/room/${room.roomCode}`)}
                     disabled={full}
+                    onClick={() => navigate(`/room/${room.roomCode}`)}
+                    className={`w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-black text-sm tracking-tight transition-all ${
+                      full 
+                        ? "bg-slate-50 text-slate-300 cursor-not-allowed" 
+                        : "bg-slate-900 text-white hover:bg-indigo-600 shadow-lg shadow-slate-900/10 hover:shadow-indigo-600/20"
+                    }`}
                   >
-                    {full ? "Room Full" : "Join Class →"}
+                    {full ? "Room at Capacity" : "Enter Classroom"}
+                    {!full && <ArrowRight size={18} />}
                   </button>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
-        )}
-      </div>
-    </>
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
   );
 }

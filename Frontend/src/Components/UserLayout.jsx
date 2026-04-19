@@ -7,17 +7,37 @@ import {
   Bell, MessageSquare, LogOut, Search, User, Menu, X
 } from "lucide-react";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Overview",       path: "/dashboard" },
-  { icon: GraduationCap,  label: "Universities",   path: "/dashboard/universities" },
-  { icon: Award,          label: "Scholarships",   path: "/dashboard/scholarships" },
-  { icon: Video,          label: "My Classes",     path: "/classes" },
-  { icon: FileText,       label: "Applications",   path: "/file" },
-  { icon: Calculator,     label: "Cost Estimator", path: "/cost-estimator" },
-  { icon: Clock,          label: "Reminders",      path: "/reminder" },
-  { icon: ShieldCheck,    label: "Eligibility",    path: "/test" },
-  { icon: CheckSquare,    label: "Checklist",      path: "/checklist" },
-  { icon: Heart,          label: "Favorites",      path: "/fav" },
+const navSections = [
+  {
+    title: "General",
+    items: [
+      { icon: LayoutDashboard, label: "Overview",       path: "/dashboard" },
+    ]
+  },
+  {
+    title: "Education",
+    items: [
+      { icon: GraduationCap,  label: "Universities",   path: "/dashboard/universities" },
+      { icon: Award,          label: "Scholarships",   path: "/dashboard/scholarships" },
+      { icon: Video,          label: "Live Classes",   path: "/classes", isLive: true },
+    ]
+  },
+  {
+    title: "Tools & Planning",
+    items: [
+      { icon: FileText,       label: "Applications",   path: "/file" },
+      { icon: Calculator,     label: "Cost Estimator", path: "/cost-estimator" },
+      { icon: Clock,          label: "Reminders",      path: "/reminder" },
+    ]
+  },
+  {
+    title: "Assessment",
+    items: [
+      { icon: ShieldCheck,    label: "Eligibility",    path: "/test" },
+      { icon: CheckSquare,    label: "Checklist",      path: "/checklist" },
+      { icon: Heart,          label: "Favorites",      path: "/fav" },
+    ]
+  }
 ];
 
 const UserLayout = () => {
@@ -35,7 +55,8 @@ const UserLayout = () => {
     navigate("/logout");
   };
 
-  const activeItem = navItems.find(item => 
+  const allItems = navSections.flatMap(s => s.items);
+  const activeItem = allItems.find(item => 
     item.path === "/dashboard" 
       ? location.pathname === "/dashboard" 
       : location.pathname.startsWith(item.path)
@@ -68,47 +89,74 @@ const UserLayout = () => {
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
-          {navItems.map((item) => {
-            const isActive = item.path === "/dashboard" 
-              ? location.pathname === "/dashboard" 
-              : location.pathname.startsWith(item.path);
-              
-            return (
-              <Link
-                key={item.label}
-                to={item.path}
-                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${
-                  isActive 
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" 
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                <item.icon size={20} className={isActive ? "text-white" : "group-hover:scale-110 transition-transform"} />
-                {isSidebarOpen && (
-                  <span className="font-bold text-sm tracking-wide">{item.label}</span>
-                )}
-                {isActive && isSidebarOpen && (
-                  <motion.div layoutId="activeInd" className="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                )}
-                {!isSidebarOpen && (
-                  <div className="absolute left-20 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 border border-white/10 shadow-xl">
-                    {item.label}
-                  </div>
-                )}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-4 py-6 space-y-10 overflow-y-auto custom-scrollbar overflow-x-hidden">
+          {navSections.map((section) => (
+            <div key={section.title} className="space-y-4">
+              {isSidebarOpen && (
+                <div className="flex items-center gap-3 px-4">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    {section.title}
+                  </span>
+                  <div className="flex-1 h-[1px] bg-slate-800/50"></div>
+                </div>
+              )}
+              <div className="space-y-1.5">
+                {section.items.map((item) => {
+                  const isActive = item.path === "/dashboard" 
+                    ? location.pathname === "/dashboard" 
+                    : location.pathname.startsWith(item.path);
+                    
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path}
+                      className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${
+                        isActive 
+                          ? "bg-indigo-600 text-white shadow-xl shadow-indigo-600/40 ring-1 ring-white/10" 
+                          : "text-slate-400 hover:bg-slate-800/50 hover:text-white"
+                      }`}
+                    >
+                      <item.icon size={20} className={`${isActive ? "text-white" : "group-hover:scale-110 group-hover:text-indigo-400"} transition-all duration-300`} />
+                      {isSidebarOpen && (
+                        <div className="flex items-center justify-between flex-1">
+                          <span className={`text-sm tracking-tight ${isActive ? "font-black" : "font-bold"}`}>{item.label}</span>
+                          {item.isLive && (
+                            <span className="flex h-2 w-2 relative">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {isActive && isSidebarOpen && (
+                        <motion.div 
+                          layoutId="activeInd" 
+                          className="ml-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,1)]" 
+                        />
+                      )}
+                      {!isSidebarOpen && (
+                        <div className="absolute left-20 bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-black opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-50 border border-white/10 shadow-2xl">
+                          {item.label}
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Bottom Section */}
-        <div className="p-4 border-t border-slate-800 overflow-hidden">
+        <div className="p-4 mt-auto border-t border-slate-800/50 bg-slate-900/20">
           <button 
             onClick={handleLogout}
-            className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all font-bold group ${!isSidebarOpen && "justify-center"}`}
+            className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all font-bold group ${!isSidebarOpen && "justify-center"}`}
           >
-            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-            {isSidebarOpen && <span className="text-sm">Sign Out</span>}
+            <div className="p-2 bg-slate-800 rounded-xl group-hover:bg-rose-500/20 group-hover:text-rose-500 transition-all">
+              <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+            </div>
+            {isSidebarOpen && <span className="text-sm">Log Out</span>}
           </button>
         </div>
       </motion.aside>
