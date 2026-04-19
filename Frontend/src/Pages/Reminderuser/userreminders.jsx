@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { io } from "socket.io-client";
 import { API_BASE_URL, SOCKET_URL } from "../../config";
 
 const API = `${API_BASE_URL}/api/reminders`;
