@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  FaUniversity, FaGlobeAmericas, FaCity, FaTrash, FaEdit, 
-  FaPlus, FaSearch, FaFilter, FaExternalLinkAlt, FaTimes, FaEye 
+import {
+  FaUniversity, FaGlobeAmericas, FaCity, FaTrash, FaEdit,
+  FaPlus, FaSearch, FaFilter, FaExternalLinkAlt, FaTimes, FaEye
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -17,10 +17,11 @@ const UniversityManagement = () => {
     UniversityCode: "",
     Country: "",
     City: "",
-    Website: "",
+    InternationalStudentLink: "",
     QSWorldRank: "",
-    "International Students": "",
-    Logo: ""
+    InternationalStudents: "",
+    Logo: "",
+    Description: ""
   });
 
   const fetchUniversities = async () => {
@@ -48,10 +49,11 @@ const UniversityManagement = () => {
         UniversityCode: uni.UniversityCode || "",
         Country: uni.Country || "",
         City: uni.City || "",
-        Website: uni.Website || "",
+        InternationalStudentLink: uni.InternationalStudentLink || "",
         QSWorldRank: uni.QSWorldRank || "",
-        "International Students": uni["International Students"] || "",
-        Logo: uni.Logo || ""
+        InternationalStudents: uni.InternationalStudents || "",
+        Logo: uni.Logo || "",
+        Description: uni.Description || ""
       });
     } else {
       setEditingUni(null);
@@ -60,10 +62,11 @@ const UniversityManagement = () => {
         UniversityCode: "",
         Country: "",
         City: "",
-        Website: "",
+        InternationalStudentLink: "",
         QSWorldRank: "",
-        "International Students": "",
-        Logo: ""
+        InternationalStudents: "",
+        Logo: "",
+        Description: ""
       });
     }
     setShowModal(true);
@@ -71,10 +74,10 @@ const UniversityManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = editingUni 
+    const url = editingUni
       ? `/api/universities/${editingUni._id}`
       : "/api/universities";
-    
+
     const method = editingUni ? "PUT" : "POST";
 
     try {
@@ -83,7 +86,7 @@ const UniversityManagement = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
-      
+
       if (response.ok) {
         setShowModal(false);
         fetchUniversities();
@@ -95,7 +98,7 @@ const UniversityManagement = () => {
 
   const handleDelete = async (code) => {
     if (!window.confirm("Are you sure you want to delete this university?")) return;
-    
+
     try {
       const response = await fetch(`/api/universities/${code}`, {
         method: "DELETE"
@@ -106,7 +109,7 @@ const UniversityManagement = () => {
     }
   };
 
-  const filteredUnis = universities.filter(uni => 
+  const filteredUnis = universities.filter(uni =>
     uni.University.toLowerCase().includes(searchTerm.toLowerCase()) ||
     uni.Country.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -119,7 +122,7 @@ const UniversityManagement = () => {
           <h1 className="text-3xl font-black text-slate-800 tracking-tight">University Management</h1>
           <p className="text-slate-500 font-medium">Add, update, or remove partner institutions</p>
         </div>
-        <button 
+        <button
           onClick={() => handleOpenModal()}
           className="flex items-center justify-center gap-2 px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5"
         >
@@ -132,8 +135,8 @@ const UniversityManagement = () => {
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search by name, country or code..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -147,7 +150,7 @@ const UniversityManagement = () => {
       </div>
 
       {/* Table Card */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/40 overflow-hidden"
@@ -165,9 +168,9 @@ const UniversityManagement = () => {
             <tbody className="divide-y divide-slate-50">
               <AnimatePresence mode="popLayout">
                 {filteredUnis.map((uni) => (
-                  <motion.tr 
+                  <motion.tr
                     layout
-                    key={uni._id} 
+                    key={uni._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -177,10 +180,10 @@ const UniversityManagement = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                           {uni.Logo ? (
-                            <img 
-                              src={uni.Logo} 
-                              alt="" 
-                              className="w-full h-full object-contain" 
+                            <img
+                              src={uni.Logo}
+                              alt=""
+                              className="w-full h-full object-contain"
                               onError={(e) => {
                                 e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
                               }}
@@ -212,19 +215,19 @@ const UniversityManagement = () => {
                     </td>
                     <td className="px-8 py-6 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link 
+                        <Link
                           to={`/admin/universities/${uni._id}`}
                           className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
                         >
                           <FaEye className="text-sm" />
                         </Link>
-                        <button 
+                        <button
                           onClick={() => handleOpenModal(uni)}
                           className="p-2.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
                         >
                           <FaEdit className="text-sm" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(uni.UniversityCode)}
                           className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
                         >
@@ -252,14 +255,14 @@ const UniversityManagement = () => {
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -269,7 +272,7 @@ const UniversityManagement = () => {
                 <h2 className="text-xl font-black text-slate-800">
                   {editingUni ? "Edit University" : "New University Registration"}
                 </h2>
-                <button 
+                <button
                   onClick={() => setShowModal(false)}
                   className="p-2 hover:bg-slate-200 rounded-full transition-colors"
                 >
@@ -281,72 +284,99 @@ const UniversityManagement = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">University Name</label>
-                    <input 
+                    <input
                       required
-                      type="text" 
+                      type="text"
                       value={formData.University}
-                      onChange={(e) => setFormData({...formData, University: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, University: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">University Code</label>
-                    <input 
+                    <input
                       required
-                      type="text" 
+                      type="text"
                       value={formData.UniversityCode}
-                      onChange={(e) => setFormData({...formData, UniversityCode: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, UniversityCode: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Country</label>
-                    <input 
+                    <input
                       required
-                      type="text" 
+                      type="text"
                       value={formData.Country}
-                      onChange={(e) => setFormData({...formData, Country: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, Country: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">City</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={formData.City}
-                      onChange={(e) => setFormData({...formData, City: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, City: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">QS World Rank</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={formData.QSWorldRank}
-                      onChange={(e) => setFormData({...formData, QSWorldRank: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, QSWorldRank: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Website URL</label>
-                    <input 
-                      type="url" 
-                      value={formData.Website}
-                      onChange={(e) => setFormData({...formData, Website: e.target.value})}
+                    <input
+                      type="url"
+                      value={formData.InternationalStudentLink}
+                      onChange={(e) => setFormData({ ...formData, InternationalStudentLink: e.target.value })}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">International Students</label>
+                    <input
+                      type="number"
+                      value={formData.InternationalStudents}
+                      onChange={(e) => setFormData({ ...formData, InternationalStudents: e.target.value })}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo URL</label>
+                    <input
+                      type="url"
+                      value={formData.Logo}
+                      onChange={(e) => setFormData({ ...formData, Logo: e.target.value })}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                    <textarea
+                      rows={3}
+                      value={formData.Description}
+                      onChange={(e) => setFormData({ ...formData, Description: e.target.value })}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
                 </div>
 
                 <div className="mt-10 flex gap-4">
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setShowModal(false)}
                     className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-colors"
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     type="submit"
                     className="flex-[2] px-6 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/30 transition-all"
                   >

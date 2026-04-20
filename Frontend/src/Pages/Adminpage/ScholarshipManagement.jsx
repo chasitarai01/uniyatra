@@ -14,12 +14,17 @@ const ScholarshipManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingScholarship, setEditingScholarship] = useState(null);
   const [formData, setFormData] = useState({
-    ScholarshipName: "",
-    University: "",
-    Description: "",
-    Eligibility: "",
-    Benefit: "",
-    Deadline: ""
+    scholarshipName: "",
+    university: "",
+    howToApply: "",
+    scholarshipValue: "",
+    noOfAwardsAvailable: "",
+    country: "",
+    faculty: "",
+    level: "",
+    criteria: "",
+    link: "",
+    nationality: ""
   });
 
   const fetchData = async () => {
@@ -48,22 +53,32 @@ const ScholarshipManagement = () => {
     if (scholarship) {
       setEditingScholarship(scholarship);
       setFormData({
-        ScholarshipName: scholarship.ScholarshipName || "",
-        University: scholarship.University || "",
-        Description: scholarship.Description || "",
-        Eligibility: scholarship.Eligibility || "",
-        Benefit: scholarship.Benefit || "",
-        Deadline: scholarship.Deadline || ""
+        scholarshipName: scholarship.scholarshipName || "",
+        university: scholarship.university || "",
+        howToApply: scholarship.howToApply || "",
+        scholarshipValue: scholarship.scholarshipValue || "",
+        noOfAwardsAvailable: scholarship.noOfAwardsAvailable || "",
+        country: scholarship.country || "",
+        faculty: scholarship.faculty || "",
+        level: scholarship.level || "",
+        criteria: scholarship.criteria || "",
+        link: scholarship.link || "",
+        nationality: scholarship.nationality || ""
       });
     } else {
       setEditingScholarship(null);
       setFormData({
-        ScholarshipName: "",
-        University: "",
-        Description: "",
-        Eligibility: "",
-        Benefit: "",
-        Deadline: ""
+        scholarshipName: "",
+        university: "",
+        howToApply: "",
+        scholarshipValue: "",
+        noOfAwardsAvailable: "",
+        country: "",
+        faculty: "",
+        level: "",
+        criteria: "",
+        link: "",
+        nationality: ""
       });
     }
     setShowModal(true);
@@ -107,8 +122,8 @@ const ScholarshipManagement = () => {
   };
 
   const filteredScholarships = Array.isArray(scholarships) ? scholarships.filter(s => 
-    s.ScholarshipName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.University.toLowerCase().includes(searchTerm.toLowerCase())
+    (s.scholarshipName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.university || "").toLowerCase().includes(searchTerm.toLowerCase())
   ) : [];
 
   return (
@@ -179,21 +194,21 @@ const ScholarshipManagement = () => {
                           <FaAward className="text-xl" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-800">{s.ScholarshipName}</p>
-                          <p className="text-xs font-semibold text-purple-500 mt-0.5">{s.Benefit}</p>
+                          <p className="text-sm font-bold text-slate-800">{s.scholarshipName}</p>
+                          <p className="text-xs font-semibold text-purple-500 mt-0.5">{s.scholarshipValue}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-2 text-sm font-bold text-slate-600">
                         <FaBuilding className="text-slate-300" />
-                        {s.University}
+                        {s.university}
                       </div>
                     </td>
                     <td className="px-8 py-6 text-center">
                       <span className="inline-flex items-center gap-1.5 text-xs font-black text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg">
-                        <FaCalendarAlt className="text-[10px]" />
-                        {s.Deadline || "No Date"}
+                        <FaAward className="text-[10px]" />
+                        {s.level || "Any"}
                       </span>
                     </td>
                     <td className="px-8 py-6 text-right">
@@ -262,18 +277,18 @@ const ScholarshipManagement = () => {
                     <input 
                       required
                       type="text" 
-                      value={formData.ScholarshipName}
-                      onChange={(e) => setFormData({...formData, ScholarshipName: e.target.value})}
+                      value={formData.scholarshipName}
+                      onChange={(e) => setFormData({...formData, scholarshipName: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">University / Provider</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">University / Provider Code</label>
                     <select 
                       required
-                      value={formData.University}
-                      onChange={(e) => setFormData({...formData, University: e.target.value})}
+                      value={formData.university}
+                      onChange={(e) => setFormData({...formData, university: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     >
                       <option value="">Select University</option>
@@ -284,44 +299,102 @@ const ScholarshipManagement = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Benefit Amount/Type</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Value / Benefit Amount</label>
                     <input 
                       required
                       type="text" 
                       placeholder="e.g. $10,000 or Full Tuition"
-                      value={formData.Benefit}
-                      onChange={(e) => setFormData({...formData, Benefit: e.target.value})}
+                      value={formData.scholarshipValue}
+                      onChange={(e) => setFormData({...formData, scholarshipValue: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deadline</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">No. of Awards Available</label>
                     <input 
+                      required
                       type="text" 
-                      placeholder="e.g. 2026-12-31"
-                      value={formData.Deadline}
-                      onChange={(e) => setFormData({...formData, Deadline: e.target.value})}
+                      placeholder="e.g. 5 or Multiple"
+                      value={formData.noOfAwardsAvailable}
+                      onChange={(e) => setFormData({...formData, noOfAwardsAvailable: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Country</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.country}
+                      onChange={(e) => setFormData({...formData, country: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Faculty</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.faculty}
+                      onChange={(e) => setFormData({...formData, faculty: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Level</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.level}
+                      onChange={(e) => setFormData({...formData, level: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nationality</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.nationality}
+                      onChange={(e) => setFormData({...formData, nationality: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Link to Apply</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.link}
+                      onChange={(e) => setFormData({...formData, link: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
 
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Eligibility Criteria</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Criteria</label>
                     <textarea 
+                      required
                       rows={3}
-                      value={formData.Eligibility}
-                      onChange={(e) => setFormData({...formData, Eligibility: e.target.value})}
+                      value={formData.criteria}
+                      onChange={(e) => setFormData({...formData, criteria: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
 
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">How To Apply</label>
                     <textarea 
+                      required
                       rows={4}
-                      value={formData.Description}
-                      onChange={(e) => setFormData({...formData, Description: e.target.value})}
+                      value={formData.howToApply}
+                      onChange={(e) => setFormData({...formData, howToApply: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>

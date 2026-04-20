@@ -20,6 +20,7 @@ const CourseManagement = () => {
     Faculty: "",
     Level: "Undergraduate",
     Mode: "Full-time",
+    StartDate: "",
     Duration: "",
     TuitionFee: "",
     TotalFee: ""
@@ -58,6 +59,7 @@ const CourseManagement = () => {
         Faculty: course.Faculty || "",
         Level: course.Level || "Undergraduate",
         Mode: course.Mode || "Full-time",
+        StartDate: course.StartDate || "",
         Duration: course.Duration || "",
         TuitionFee: course.TuitionFee || "",
         TotalFee: course.TotalFee || ""
@@ -72,6 +74,7 @@ const CourseManagement = () => {
         Faculty: "",
         Level: "Undergraduate",
         Mode: "Full-time",
+        StartDate: "",
         Duration: "",
         TuitionFee: "",
         TotalFee: ""
@@ -319,6 +322,17 @@ const CourseManagement = () => {
                       placeholder="e.g. 4 Years"
                       value={formData.Duration}
                       onChange={(e) => setFormData({...formData, Duration: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Start Date</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Sep 2026"
+                      value={formData.StartDate}
+                      onChange={(e) => setFormData({...formData, StartDate: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
