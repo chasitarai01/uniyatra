@@ -14,6 +14,7 @@ import ScholarshipList from "./Pages/Scholarship/Singlescholarship.jsx";
 import ScholarshipsByUniversity from "./Pages/Scholarship/ScholarshipsByUniversity.jsx";
 import ScholarshipsPage from "./Pages/Scholarship/Allscholarship.jsx";
 import AllScholarship from "./Pages/Scholarship/Allscholarship.jsx";
+import AllCourses from "./Pages/Coursepages/AllCourses.jsx";
 import SingleScholarship from "./Pages/Scholarship/Singlescholarship.jsx";
 import FileUpload from "./Pages/Filepage/file.jsx";
 import ChecklistPage from "./Pages/Checklist/checklistpage.jsx";
@@ -43,6 +44,7 @@ import UserUniversityList from "./Pages/UserUniversityList.jsx";
 import UserScholarshipList from "./Pages/UserScholarshipList.jsx";
 import AdminUserManagement from "./Pages/Adminpage/AdminUserManagement.jsx";
 import AdminChecklistManagement from "./Pages/Adminpage/AdminChecklistManagement.jsx";
+import AdminFileManagement from "./Pages/Adminpage/AdminFileManagement.jsx";
 import SupportDashboard from "./Pages/SupportChat/SupportDashboard.jsx";
 import SmartAssistant from "./Components/SmartAssistant.jsx";
 
@@ -52,7 +54,7 @@ const Layout = ({ children }) => {
   const showNav = ['/home', '/uni', '/scholarship', '/courses'].some(p =>
     location.pathname === p || location.pathname.startsWith(p + '/')
   );
-  
+
   return (
     <>
       {showNav && <Nav />}
@@ -75,12 +77,13 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/home" element={<Home />} />
-          
+
           <Route path="/uni" element={<UniversityListing />} />
           <Route path="/uni/:id" element={<SingleUni />} />
           <Route path="/uni/:id/courses" element={<Courses />} />
           <Route path="scholar" element={<SingleScholarship />} />
           <Route path="/courses/:code" element={<UniversityCourses />} />
+          <Route path="/courses" element={<AllCourses />} />
           <Route path="/uni/:id/scholarships" element={<ScholarshipsByUniversity />} />
           <Route path="/scholarship" element={<AllScholarship />} />
           {/* user dashboard */}
@@ -96,7 +99,7 @@ function App() {
             <Route path="/checklist" element={<ChecklistPage />} />
             <Route path="/test" element={<EligibilityTest />} />
             <Route path="/fav" element={<FavoriteUniversities />} />
-            <Route path="/notification" element={<UserNotifications/>} />
+            <Route path="/notification" element={<UserNotifications />} />
             <Route path="/classes" element={<UserRooms />} />
             <Route path="/reminder" element={<UserReminders />} />
             <Route path="/support-chat" element={<SupportDashboard />} />
@@ -116,6 +119,7 @@ function App() {
             <Route path="/admin/scholarships" element={<ScholarshipManagement />} />
             <Route path="/admin/scholarships/:id" element={<AdminScholarshipDetails />} />
             <Route path="/admin/users" element={<AdminUserManagement />} />
+            <Route path="/admin/files" element={<AdminFileManagement />} />
             <Route path="/admin/notifications" element={<NotificationForm />} />
             <Route path="/admin/rooms" element={<AdminRooms />} />
           </Route>

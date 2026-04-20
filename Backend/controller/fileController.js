@@ -3,11 +3,11 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const addImage = async (req, res) => {
   try {
-    const userId = req.user.id; // Get user ID from middleware
+    const userId = req.user._id; // Get user ID from middleware (Mongoose object uses _id)
 
-    const imageFiles = req.files.image;  // 'image' is now an array of files
+    const imageFiles = req.files && req.files.image ? req.files.image : [];  // 'image' is now an array of files
     
-    if (!imageFiles || imageFiles.length === 0) {
+    if (imageFiles.length === 0) {
       return res.status(400).json({ message: "File is required" });
     }
     

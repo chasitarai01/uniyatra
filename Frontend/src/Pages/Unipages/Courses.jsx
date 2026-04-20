@@ -15,11 +15,16 @@ export const Courses = () => {
       try {
         // Fetch university details
         const uniResponse = await axios.get(`/api/universities/${id}`);
-        setUniversity(uniResponse.data.data);
+        const uniData = uniResponse.data.data;
+        setUniversity(uniData);
 
         // Fetch courses for this university using the new API endpoint
-        const coursesResponse = await axios.get(`/api/courses/university/${id}`);
-        setCourses(coursesResponse.data.data || []);
+        if (uniData && uniData.UniversityCode) {
+          const coursesResponse = await axios.get(`/api/courses/university/${uniData.UniversityCode}`);
+          setCourses(coursesResponse.data.data || []);
+        } else {
+          setCourses([]);
+        }
       } catch (err) {
         console.error("Error fetching university data:", err);
         setError("Failed to fetch university information");
@@ -65,29 +70,29 @@ export const Courses = () => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {course.name || course.courseName || 'Course Name'}
+                    {course.CourseName || 'Course Name'}
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    {course.description || 'Course description not available'}
+                    {course.Overview || 'Course description not available'}
                   </p>
 
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                    {course.duration && (
+                    {course.Duration && (
                       <div className="flex items-center">
                         <FaClock className="mr-2 text-indigo-600" />
-                        Duration: {course.duration}
+                        Duration: {course.Duration}
                       </div>
                     )}
-                    {course.fee && (
+                    {(course.TuitionFee || course.TotalFee) && (
                       <div className="flex items-center">
                         <FaDollarSign className="mr-2 text-green-600" />
-                        Fee: {course.fee}
+                        Fee: {course.TuitionFee || course.TotalFee}
                       </div>
                     )}
-                    {course.level && (
+                    {course.Level && (
                       <div className="flex items-center">
                         <FaGraduationCap className="mr-2 text-blue-600" />
-                        Level: {course.level}
+                        Level: {course.Level}
                       </div>
                     )}
                   </div>

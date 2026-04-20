@@ -7,16 +7,39 @@ import {
 } from "lucide-react";
 
 const AdminUserManagement = () => {
-  const [users, setUsers] = useState([
-    // Mock data for initial professional feel
-    { _id: "1", name: "Alex Johnson", email: "alex@example.com", role: "student", status: "active", joined: "2026-01-12" },
-    { _id: "2", name: "Sarah Williams", email: "sarah@edu.com", role: "admin", status: "active", joined: "2025-11-20" },
-    { _id: "3", name: "David Chen", email: "david.c@uni.edu", role: "student", status: "pending", joined: "2026-03-05" },
-    { _id: "4", name: "Elena Rodriguez", email: "elena@global.org", role: "student", status: "suspended", joined: "2026-02-15" },
-  ]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("All");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/auth/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        const usersList = Array.isArray(data) ? data : data.users || [];
+        // Map backend fields to component expectations if needed
+        const mappedUsers = usersList.map(u => ({
+          ...u,
+          name: u.username || u.name || "Unknown",
+          role: u.role || "student",
+          status: u.status || "active",
+          joined: u.createdAt || new Date().toISOString()
+        }));
+        setUsers(mappedUsers);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(u => {
     const searchMatch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) || 

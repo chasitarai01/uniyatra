@@ -1,239 +1,9 @@
 import React, { useState, useEffect } from "react";
-
-const palette = {
-  cream: "#F2EDE4",
-  sand1: "#D9D0C0",
-  sand2: "#C4B89A",
-  tan:   "#A99D84",
-  warm:  "#998A6D",
-  bark:  "#7A6E5A",
-  dark:  "#2E2A24",
-};
-
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap');
-
-  .un-page {
-    min-height: 100vh;
-    background: #fff;
-    font-family: 'DM Mono', monospace;
-    padding: 56px 0 80px;
-  }
-
-  .un-container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  .un-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: ${palette.warm};
-    margin-bottom: 10px;
-  }
-
-  .un-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    font-weight: 300;
-    color: ${palette.dark};
-    line-height: 1.1;
-    margin-bottom: 6px;
-  }
-
-  .un-title em {
-    font-style: italic;
-    color: ${palette.bark};
-  }
-
-  .un-meta {
-    font-size: 11px;
-    color: ${palette.tan};
-    letter-spacing: 0.08em;
-    margin-bottom: 40px;
-  }
-
-  .un-divider {
-    width: 40px;
-    height: 1px;
-    background: ${palette.warm};
-    opacity: 0.5;
-    margin-bottom: 40px;
-  }
-
-  .un-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid ${palette.sand1};
-    margin-bottom: 32px;
-  }
-
-  .un-tab {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: ${palette.tan};
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.2s;
-  }
-
-  .un-tab.active {
-    color: ${palette.dark};
-    border-bottom-color: ${palette.warm};
-  }
-
-  .un-empty {
-    text-align: center;
-    padding: 64px 0;
-    color: ${palette.sand2};
-  }
-
-  .un-empty-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    opacity: 0.4;
-  }
-
-  .un-empty-text {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .un-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .un-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 20px 0;
-    border-bottom: 1px solid ${palette.cream};
-    cursor: pointer;
-    transition: background 0.15s;
-    position: relative;
-  }
-
-  .un-item:hover {
-    background: #FAFAF9;
-    padding-left: 8px;
-    padding-right: 8px;
-    margin-left: -8px;
-    margin-right: -8px;
-    border-radius: 4px;
-  }
-
-  .un-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 5px;
-  }
-
-  .un-dot.unread { background: ${palette.warm}; }
-  .un-dot.read   { background: ${palette.sand1}; }
-
-  .un-item-body { flex: 1; }
-
-  .un-item-message {
-    font-size: 13px;
-    color: ${palette.dark};
-    line-height: 1.5;
-    margin-bottom: 4px;
-  }
-
-  .un-item-message.read {
-    color: ${palette.tan};
-    font-weight: 300;
-  }
-
-  .un-item-time {
-    font-size: 10px;
-    color: ${palette.sand2};
-    letter-spacing: 0.06em;
-  }
-
-  .un-item-badge {
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  .un-item-badge.unread {
-    background: ${palette.cream};
-    color: ${palette.warm};
-  }
-
-  .un-item-badge.read {
-    background: transparent;
-    color: ${palette.sand2};
-  }
-
-  .un-mark-all {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: ${palette.warm};
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 24px;
-    display: block;
-    margin-left: auto;
-    transition: color 0.15s;
-  }
-
-  .un-mark-all:hover { color: ${palette.bark}; }
-
-  .un-error {
-    text-align: center;
-    padding: 40px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: ${palette.tan};
-  }
-
-  .un-loading {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 8px;
-  }
-
-  .un-skeleton {
-    height: 56px;
-    background: linear-gradient(90deg, ${palette.cream} 25%, ${palette.sand1}33 50%, ${palette.cream} 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-    border-radius: 4px;
-  }
-
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-`;
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Bell, CheckCircle2, Circle, AlertCircle, FileText, 
+  Award, Video, MessageSquare, Trash2 
+} from "lucide-react";
 
 const timeAgo = (dateStr) => {
   if (!dateStr) return "";
@@ -249,22 +19,25 @@ const UserNotifications = () => {
   const [user, setUser]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
-  const [tab, setTab]         = useState("all"); // "all" | "unread" | "read"
+  const [tab, setTab]         = useState("all");
 
-  // Decode JWT
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = JSON.parse(atob(token.split(".")[1]));
-        setUser(decoded);
-      } catch (err) {
-        console.error("Invalid token", err);
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = JSON.parse(atob(token.split(".")[1]));
+          setUser(decoded);
+        } catch (err) {
+          console.error("Invalid token", err);
+        }
       }
     }
   }, []);
 
-  // Fetch notifications
   useEffect(() => {
     if (!user) return;
     const fetchNotifications = async () => {
@@ -276,10 +49,9 @@ const UserNotifications = () => {
         });
         if (!res.ok) throw new Error();
         const data = await res.json();
-        // JWT may encode the id as _id, id, or userId — check all
+        
         const userId = user._id || user.id || user.userId;
         const mine = data.filter((n) => n.userId === userId);
-        // Sort newest first
         mine.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setNotifications(mine);
       } catch {
@@ -317,95 +89,201 @@ const UserNotifications = () => {
     return true;
   });
 
-  // Derive counts directly from notifications state so they always stay in sync
-  const totalCount  = notifications.length;
+  const getIconForType = (type, message) => {
+    const msgLower = (message || "").toLowerCase();
+    if (msgLower.includes("document") || type === "document" || msgLower.includes("file")) {
+      return { icon: FileText, color: "text-blue-500", bg: "bg-blue-50" };
+    }
+    if (msgLower.includes("scholarship") || type === "scholarship") {
+      return { icon: Award, color: "text-purple-600", bg: "bg-purple-50" };
+    }
+    if (msgLower.includes("class") || msgLower.includes("room") || type === "room") {
+      return { icon: Video, color: "text-rose-500", bg: "bg-rose-50" };
+    }
+    return { icon: Bell, color: "text-indigo-600", bg: "bg-indigo-50" };
+  };
+
   const unreadCount = notifications.filter((n) => !n.isRead).length;
-  const readCount   = notifications.filter((n) => n.isRead).length;
 
   return (
-    <>
-      <style>{styles}</style>
-      <div className="un-page">
-        <div className="un-container">
-
-          <p className="un-eyebrow">Inbox</p>
-          <h1 className="un-title">My <em>Notifications</em></h1>
-          <p className="un-meta">
-            {user ? `Signed in as ${user.username || user.name || user.email || "User"}` : ""}
-            {unreadCount > 0 ? ` · ${unreadCount} unread` : " · All caught up"}
+    <div className="space-y-10">
+      {/* Welcome Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+            Your <span className="text-indigo-600">Notifications</span> 🔔
+          </h1>
+          <p className="text-slate-500 font-medium mt-1">
+            {unreadCount > 0 
+              ? `You have ${unreadCount} unread message${unreadCount > 1 ? 's' : ''} waiting for you.` 
+              : "You're all caught up! No new alerts."}
           </p>
-          <div className="un-divider" />
+        </div>
+        {unreadCount > 0 && (
+          <button 
+            onClick={markAllRead}
+            className="px-5 py-2.5 bg-indigo-50 rounded-2xl border border-indigo-100 text-indigo-600 text-sm font-bold flex items-center gap-2 hover:bg-indigo-100 transition-all"
+          >
+            <CheckCircle2 size={16} />
+            <span>Mark all read</span>
+          </button>
+        )}
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        {/* Main Notifications Feed */}
+        <div className="lg:col-span-3 space-y-6">
           {/* Tabs */}
-          <div className="un-tabs">
-            {[
-              { key: "all",    label: `All (${totalCount})`       },
-              { key: "unread", label: `Unread (${unreadCount})`   },
-              { key: "read",   label: `Read (${readCount})`       },
-            ].map(({ key, label }) => (
+          <div className="flex bg-white rounded-2xl p-1.5 border border-slate-100 shadow-sm w-fit">
+            {["all", "unread", "read"].map((key) => (
               <button
                 key={key}
-                className={`un-tab ${tab === key ? "active" : ""}`}
                 onClick={() => setTab(key)}
+                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all capitalize ${
+                  tab === key 
+                  ? "bg-slate-900 text-white shadow-md" 
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                }`}
               >
-                {label}
+                {key}
               </button>
             ))}
           </div>
 
-          {/* Mark all read */}
-          {unreadCount > 0 && (
-            <button className="un-mark-all" onClick={markAllRead}>
-              Mark all as read →
-            </button>
-          )}
+          <div className="space-y-4">
+            {loading && (
+              [1, 2, 3].map((i) => (
+                <div key={i} className="h-28 bg-white border border-slate-100 shadow-sm animate-pulse rounded-[2rem] w-full"></div>
+              ))
+            )}
 
-          {/* States */}
-          {error && <div className="un-error">{error}</div>}
+            {!loading && error && (
+              <div className="bg-rose-50 border border-rose-100 text-rose-600 p-8 rounded-[2rem] font-bold text-center flex flex-col items-center gap-3">
+                <AlertCircle size={32} />
+                <p>{error}</p>
+              </div>
+            )}
 
-          {loading && (
-            <div className="un-loading">
-              {[1, 2, 3].map((i) => <div key={i} className="un-skeleton" />)}
-            </div>
-          )}
+            {!loading && !error && filtered.length === 0 && (
+              <div className="bg-white border border-slate-100 shadow-sm p-16 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-6">
+                  <Bell size={40} />
+                </div>
+                <h3 className="text-xl font-black text-slate-800">Inbox Zero</h3>
+                <p className="text-slate-500 font-medium mt-2 max-w-sm">
+                  {tab === "unread" ? "Great job! You don't have any unread messages." :
+                   tab === "read"   ? "You haven't read any messages yet." :
+                   "You're completely caught up! We'll notify you when something important happens."}
+                </p>
+              </div>
+            )}
 
-          {!loading && !error && filtered.length === 0 && (
-            <div className="un-empty">
-              <div className="un-empty-icon">○</div>
-              <p className="un-empty-text">
-                {tab === "unread" ? "No unread notifications" :
-                 tab === "read"   ? "No read notifications" :
-                 "No notifications yet"}
+            {!loading && !error && filtered.length > 0 && (
+              <AnimatePresence mode="popLayout">
+                {filtered.map((n) => {
+                  const { icon: Icon, color, bg } = getIconForType(n.type, n.message);
+                  return (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      key={n._id}
+                      onClick={() => !n.isRead && markAsRead(n._id)}
+                      className={`group relative p-6 rounded-[2rem] border transition-all cursor-pointer flex flex-col sm:flex-row gap-5 ${
+                        n.isRead 
+                        ? "bg-white border-slate-100 shadow-sm hover:shadow-md" 
+                        : "bg-indigo-50/50 border-indigo-100 shadow-md hover:shadow-lg"
+                      }`}
+                    >
+                      {/* Icon */}
+                      <div className="shrink-0">
+                        <div className={`w-14 h-14 rounded-[1.2rem] flex items-center justify-center shadow-inner relative ${bg} ${color}`}>
+                          <Icon size={24} />
+                          {!n.isRead && (
+                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                          <p className={`text-sm md:text-base leading-relaxed pr-8 ${
+                            n.isRead ? "text-slate-600 font-medium" : "text-slate-900 font-black"
+                          }`}>
+                            {/* If the message contains a colon (like Title: Message), bold the title */}
+                            {n.message.includes(":") ? (
+                              <>
+                                <span className="mr-1">{n.message.split(":")[0]}:</span>
+                                <span className={n.isRead ? "font-normal" : "font-medium"}>{n.message.split(":").slice(1).join(":")}</span>
+                              </>
+                            ) : n.message}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 mt-3">
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md inline-flex w-fit ${
+                            n.isRead ? "bg-slate-100 text-slate-500" : "bg-indigo-100 text-indigo-700"
+                          }`}>
+                            {n.isRead ? "Read" : "New Message"}
+                          </span>
+                          <span className="text-[11px] font-bold text-slate-400">
+                            {timeAgo(n.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action (Read mark) */}
+                      {!n.isRead && (
+                        <div className="hidden sm:flex shrink-0 items-center justify-center w-10 h-10 rounded-full bg-white border border-slate-100 text-slate-300 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors tooltip-trigger relative">
+                          <CheckCircle2 size={18} />
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            )}
+          </div>
+        </div>
+
+        {/* Info Sidebar */}
+        <div className="lg:col-span-1 space-y-6">
+          <section className="bg-[#0f172a] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/20 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6">
+                <MessageSquare size={20} className="text-indigo-300" />
+              </div>
+              <h3 className="text-xl font-black mb-2 leading-tight">Stay Updated</h3>
+              <p className="text-slate-400 text-sm font-medium mb-6 leading-relaxed">
+                Check this page regularly. We'll post all important updates regarding your applications, documents, and classes here.
               </p>
             </div>
-          )}
+          </section>
 
-          {!loading && !error && filtered.length > 0 && (
-            <ul className="un-list">
-              {filtered.map((n) => (
-                <li
-                  key={n._id}
-                  className="un-item"
-                  onClick={() => !n.isRead && markAsRead(n._id)}
-                >
-                  <div className={`un-dot ${n.isRead ? "read" : "unread"}`} />
-                  <div className="un-item-body">
-                    <p className={`un-item-message ${n.isRead ? "read" : ""}`}>
-                      {n.message}
-                    </p>
-                    <p className="un-item-time">{timeAgo(n.createdAt)}</p>
-                  </div>
-                  <span className={`un-item-badge ${n.isRead ? "read" : "unread"}`}>
-                    {n.isRead ? "Read" : "New"}
-                  </span>
-                </li>
-              ))}
+          <section className="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Color Guide</h4>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center"><FileText size={14}/></div>
+                <span className="text-sm font-bold text-slate-700">Documents</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center"><Award size={14}/></div>
+                <span className="text-sm font-bold text-slate-700">Scholarships</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"><Video size={14}/></div>
+                <span className="text-sm font-bold text-slate-700">Classes & Rooms</span>
+              </li>
             </ul>
-          )}
-
+          </section>
         </div>
+
       </div>
-    </>
+    </div>
   );
 };
 

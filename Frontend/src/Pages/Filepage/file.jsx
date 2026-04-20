@@ -68,7 +68,10 @@ const FileUpload = () => {
         `${API_BASE}/api/file`,
         formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          },
           onUploadProgress: (e) => {
             if (e.total) setProgress(Math.round((e.loaded / e.total) * 100));
           },
@@ -126,8 +129,8 @@ const FileUpload = () => {
                   onDragLeave={() => setDragOver(false)}
                   onClick={() => inputRef.current?.click()}
                   className={`relative group cursor-pointer rounded-[2rem] border-2 border-dashed transition-all duration-500 flex flex-col items-center justify-center p-16 ${dragOver
-                      ? "border-indigo-600 bg-indigo-50/50 scale-[0.99]"
-                      : "border-slate-200 hover:border-indigo-400 hover:bg-slate-50/50"
+                    ? "border-indigo-600 bg-indigo-50/50 scale-[0.99]"
+                    : "border-slate-200 hover:border-indigo-400 hover:bg-slate-50/50"
                     }`}
                 >
                   <div className={`w-20 h-20 rounded-3xl mb-6 flex items-center justify-center transition-all duration-500 ${dragOver ? "bg-indigo-600 text-white scale-110 rotate-12" : "bg-indigo-50 text-indigo-600 group-hover:scale-110"
@@ -213,8 +216,8 @@ const FileUpload = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className={`mt-6 p-5 rounded-3xl flex items-center gap-4 border ${message.type === "success"
-                        ? "bg-emerald-50 border-emerald-100 text-emerald-700"
-                        : "bg-rose-50 border-rose-100 text-rose-700"
+                      ? "bg-emerald-50 border-emerald-100 text-emerald-700"
+                      : "bg-rose-50 border-rose-100 text-rose-700"
                       }`}
                   >
                     {message.type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}

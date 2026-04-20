@@ -40,6 +40,7 @@ const Nav = () => {
           {[
             { label: "Home", href: "/home" },
             { label: "Universities", href: "/uni" },
+            { label: "Courses", href: "/courses" },
             { label: "Scholarships", href: "/scholarship" }
           ].map((item) => (
             <Link

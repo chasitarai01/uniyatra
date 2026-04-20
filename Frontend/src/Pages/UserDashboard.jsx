@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from '../api/axios.js';
 import { 
   GraduationCap, Award, Video, FileText, 
   ArrowRight, Sparkles, TrendingUp, Target, 
-  Calendar, CheckCircle2
+  Calendar, CheckCircle2, BookOpen, DollarSign, ChevronRight
 } from 'lucide-react';
 
 const Widget = ({ title, value, icon: Icon, color, delay, path }) => (
@@ -39,6 +40,8 @@ const Widget = ({ title, value, icon: Icon, color, delay, path }) => (
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
   const [greeting, setGreeting] = useState('');
+  const [scholarships, setScholarships] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -48,10 +51,30 @@ export default function UserDashboard() {
     if (hour < 12) setGreeting('Good Morning');
     else if (hour < 18) setGreeting('Good Afternoon');
     else setGreeting('Good Evening');
+
+    // Fetch sidebar data
+    const fetchSidebarData = async () => {
+      try {
+        const [scholarRes, courseRes] = await Promise.all([
+          axios.get('/api/scholarships'),
+          axios.get('/api/courses')
+        ]);
+        
+        const fetchedScholarships = scholarRes.data.scholarships || Array.isArray(scholarRes.data) ? scholarRes.data : [];
+        const fetchedCourses = courseRes.data.data || [];
+        
+        setScholarships(fetchedScholarships.slice(0, 3)); // Top 3
+        setCourses(fetchedCourses.slice(0, 2)); // Top 2
+      } catch (err) {
+        console.error("Error fetching dashboard sidebar data:", err);
+      }
+    };
+    
+    fetchSidebarData();
   }, []);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 pb-10">
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -132,7 +155,76 @@ export default function UserDashboard() {
         </div>
 
         {/* Sidebar Widgets */}
-        <div className="space-y-8">
+        <div className="space-y-6">
+          
+          {/* Recommended Courses Widget */}
+          {courses.length > 0 && (
+            <section className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[40px] rounded-full"></div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-black text-slate-800 tracking-tight">Recommended</h3>
+                <Link to="/courses" className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View All</Link>
+              </div>
+              <div className="space-y-4">
+                {courses.map((course) => (
+                  <Link to={`/courses/${course.UniversityCode}`} key={course._id} className="block group">
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 group-hover:border-blue-200 group-hover:bg-blue-50/50 transition-all">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                          <BookOpen size={18} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-800 truncate group-hover:text-blue-600 transition-colors">
+                            {course.CourseName}
+                          </p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 truncate">
+                            {course.Faculty}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Latest Scholarships Widget */}
+          {scholarships.length > 0 && (
+            <section className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 blur-[40px] rounded-full"></div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-black text-slate-800 tracking-tight">Financial Aid</h3>
+                <Link to="/dashboard/scholarships" className="text-[10px] font-black text-purple-600 uppercase tracking-widest hover:underline">Explore</Link>
+              </div>
+              <div className="space-y-4">
+                {scholarships.map((s) => (
+                  <Link to={`/dashboard/scholarship/${s._id}`} key={s._id} className="block group">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-50 to-white border border-purple-100 group-hover:border-purple-300 group-hover:shadow-md transition-all">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block px-2 py-0.5 bg-purple-100 text-purple-700 text-[9px] font-black uppercase tracking-widest rounded mb-2">
+                            {s.level || s.Level || "All"}
+                          </span>
+                          <p className="text-sm font-bold text-slate-800 line-clamp-2 leading-snug group-hover:text-purple-700 transition-colors">
+                            {s.scholarshipName || s.ScholarshipName}
+                          </p>
+                          <div className="flex items-center gap-1.5 mt-2 text-slate-500 font-semibold text-xs">
+                            <DollarSign size={12} className="text-emerald-500" />
+                            <span className="truncate">{s.scholarshipValue || s.ScholarshipValue}</span>
+                          </div>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-300 group-hover:bg-purple-600 group-hover:text-white transition-all shrink-0 shadow-sm border border-slate-100">
+                          <ChevronRight size={14} />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Progress Tracker */}
           <section className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
             <h3 className="text-lg font-black text-slate-800 tracking-tight mb-6">Upcoming Tasks</h3>
@@ -142,12 +234,12 @@ export default function UserDashboard() {
                 { title: "Review Scholarship", date: "Apr 20, 2026", status: "New" },
                 { title: "Live Q&A Session", date: "Apr 22, 2026", status: "Reminder" },
               ].map((task, i) => (
-                <div key={i} className="flex gap-4 group">
+                <div key={i} className="flex gap-4 group cursor-pointer">
                   <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 text-slate-300 group-hover:text-indigo-500 transition-colors">
                     <CheckCircle2 size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{task.title}</p>
+                    <p className="text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{task.title}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{task.date}</span>
                       <span className="w-1 h-1 rounded-full bg-slate-300"></span>
@@ -157,9 +249,6 @@ export default function UserDashboard() {
                 </div>
               ))}
             </div>
-            <button className="w-full mt-8 py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest hover:bg-slate-50 hover:border-slate-300 transition-all">
-              + Create Task
-            </button>
           </section>
 
           {/* Promotion Card */}
@@ -169,10 +258,11 @@ export default function UserDashboard() {
             </div>
             <h3 className="text-xl font-black mb-2 tracking-tight">Need Support?</h3>
             <p className="text-indigo-100 text-xs font-medium mb-8 leading-relaxed">Our education consultants are available for a 1-on-1 discovery call.</p>
-            <Link to="/support-chat" className="block w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-sm hover:scale-105 transition-transform">
+            <Link to="/support-chat" className="block w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-sm hover:scale-105 transition-transform shadow-lg">
               Chat with Expert
             </Link>
           </section>
+
         </div>
       </div>
     </div>
