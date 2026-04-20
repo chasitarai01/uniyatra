@@ -36,7 +36,7 @@ const ScholarshipManagement = () => {
       ]);
       const scholarData = await scholarRes.json();
       const unisData = await unisRes.json();
-      setScholarships(scholarData.data || scholarData || []); // Handle different API response formats
+      setScholarships(scholarData.scholarships || scholarData.data || (Array.isArray(scholarData) ? scholarData : []));
       setUniversities(unisData.data || []);
     } catch (err) {
       console.error("Failed to fetch data", err);

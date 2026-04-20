@@ -192,7 +192,7 @@ export const getUniversityByCode = async (req, res) => {
 /// Delete university by UniversityCode
 export const deleteUniversity = async (req, res) => {
     try {
-        const { universityCode } = req.params;
+        const universityCode = req.params.universityCode || req.params.id;
 
         // Ensure universityCode exists
         if (!universityCode) {

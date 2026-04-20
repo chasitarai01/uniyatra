@@ -110,8 +110,9 @@ const UniversityManagement = () => {
   };
 
   const filteredUnis = universities.filter(uni =>
-    uni.University.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    uni.Country.toLowerCase().includes(searchTerm.toLowerCase())
+    (uni.University || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (uni.Country || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (uni.UniversityCode || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

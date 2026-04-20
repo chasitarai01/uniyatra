@@ -121,8 +121,8 @@ const CourseManagement = () => {
   };
 
   const filteredCourses = courses.filter(course => 
-    course.CourseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.UniversityCode.toLowerCase().includes(searchTerm.toLowerCase())
+    (course.CourseName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (course.UniversityCode || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -271,6 +271,17 @@ const CourseManagement = () => {
                       type="text" 
                       value={formData.CourseName}
                       onChange={(e) => setFormData({...formData, CourseName: e.target.value})}
+                      className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Country</label>
+                    <input 
+                      required
+                      type="text" 
+                      value={formData.Country}
+                      onChange={(e) => setFormData({...formData, Country: e.target.value})}
                       className="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-3.5 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all border"
                     />
                   </div>
